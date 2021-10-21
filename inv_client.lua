@@ -1,12 +1,20 @@
-require 'inv_server'
+require 'inv_common'
 
-local function getName()
-    for _, side in pairs({"top","bottom","left","right","front","back"}) do
-        if peripheral.getType(side) == "modem" then
-            return peripheral.wrap(side).getNameLocal()
+function serverCall(serverID, func, args)
+    rednet.send(serverID, {func, args})
+    while true do
+        -- TODO: Properly utilize coroutines
+        id, message = rednet.receive(PROTOCOL)
+        if id == serverID then
+            return message
         end
     end
-    return nil
 end
 
-local server = InvServer:new()
+rednet.open(getModemSide())
+while true do
+    func = read()
+    args = textutils.unserialize(read())
+    print(textutils.serialize(serverCall(0,func,args)))
+end
+rednet.close(getModemSide())
