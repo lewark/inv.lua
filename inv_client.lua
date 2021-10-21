@@ -12,9 +12,12 @@ function serverCall(serverID, func, args)
 end
 
 rednet.open(getModemSide())
+print(textutils.serialize(serverCall(0,"pullOrCraftItemsExt",{"minecraft:stick",10,"turtle_1",1})))
+--[[
 while true do
     func = read()
     args = textutils.unserialize(read())
     print(textutils.serialize(serverCall(0,func,args)))
 end
+--]]
 rednet.close(getModemSide())

@@ -1,27 +1,27 @@
 [
 	{
-		id:"minecraft:oak_planks",
-		count:4,
+		"name":"minecraft:oak_planks",
+		"count":4,
 		"ingredients":{
-			1:{id:"minecraft:oak_log"}
+			"1":{"name":"minecraft:oak_log"}
 		}
 	},
 	{
-		id:"minecraft:stick",
-		count:4,
+		"name":"minecraft:stick",
+		"count":4,
 		"ingredients":{
-			1:{id:"minecraft:oak_planks"},
-			4:{id:"minecraft:oak_planks"}
+			"1":{"tag":"minecraft:planks"},
+			"4":{"tag":"minecraft:planks"}
 		}
 	},
 	{
-		id:"minecraft:wooden_pickaxe",
+		"name":"minecraft:wooden_pickaxe",
 		"ingredients":{
-			1:{tag:"minecraft:planks"},
-			2:{tag:"minecraft:planks"},
-			3:{tag:"minecraft:planks"},
-			5:{tag:"forge:rods/wooden"},
-			8:{tag:"forge:rods/wooden"}
+			"1":{"tag":"minecraft:planks"},
+			"2":{"tag":"minecraft:planks"},
+			"3":{"tag":"minecraft:planks"},
+			"5":{"tag":"forge:rods/wooden"},
+			"8":{"tag":"forge:rods/wooden"}
 		}
 	}
 ]
