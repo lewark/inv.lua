@@ -23,5 +23,18 @@
 			"5":{"tag":"forge:rods/wooden"},
 			"8":{"tag":"forge:rods/wooden"}
 		}
+	},
+    {
+		"name":"minecraft:furnace",
+		"ingredients":{
+			"1":{"name":"minecraft:cobblestone"},
+			"2":{"name":"minecraft:cobblestone"},
+			"3":{"name":"minecraft:cobblestone"},
+			"4":{"name":"minecraft:cobblestone"},
+			"6":{"name":"minecraft:cobblestone"},
+			"7":{"name":"minecraft:cobblestone"},
+			"8":{"name":"minecraft:cobblestone"},
+			"9":{"name":"minecraft:cobblestone"}
+		}
 	}
 ]

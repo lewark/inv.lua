@@ -12,8 +12,8 @@ end
 
 
 function CraftManager:itemMatches(item,criteria)
-    expect(1, item, "table", "bil")
-    expect(2, criteria, "table", "nil")
+    expect(1, item, "table")
+    expect(2, criteria, "table")
     if criteria.name then
         return criteria.name == item.name
     elseif criteria.tag then
@@ -24,11 +24,11 @@ function CraftManager:itemMatches(item,criteria)
 end
 
 function CraftManager:findRecipeSequence(item,items)
-    if item.name then
-        print("findRecipeSequence name "..item.name)
-    else
-        print("findRecipeSequence tag "..item.tag)
-    end
+    -- if item.name then
+        -- print("findRecipeSequence name "..item.name)
+    -- else
+        -- print("findRecipeSequence tag "..item.tag)
+    -- end
     for k,recipe in pairs(self.recipes) do
         if self:itemMatches(recipe,item) then
             local combo = {}
@@ -56,7 +56,7 @@ function CraftManager:findRecipeSequence(item,items)
                             --print(i.." "..textutils.serialize(stock))
                             if self:itemMatches(stock,ingredient) and stock.count >= 1 then
                                 stock.count = stock.count - 1
-                                print("deducted stock post"..stock.name)
+                                --print("deducted stock post"..stock.name)
                                 break
                             end
                         end
@@ -78,11 +78,11 @@ function CraftManager:findRecipeSequence(item,items)
             end
         end
     end
-    if item.name then
-        print("nothing found for name "..item.name)
-    else
-        print("nothing found for tag "..item.tag)
-    end--]]
+    -- if item.name then
+        -- print("nothing found for name "..item.name)
+    -- else
+        -- print("nothing found for tag "..item.tag)
+    -- end--]]
     return nil, nil
 end
 
@@ -99,7 +99,7 @@ function CraftManager:tryCraftRecipe(recipe)
             n = self.invMgr:pullItemsByTag(item.tag,1,self.localName,destSlot)
         end
         if n == 0 then
-            print("unable to pull"..textutils.serialize(item))
+            --print("unable to pull"..textutils.serialize(item))
             success = false
             break
         end
@@ -109,7 +109,7 @@ function CraftManager:tryCraftRecipe(recipe)
         local i = turtle.getSelectedSlot()
         local n = turtle.getItemCount()
         self.invMgr:pushItemsExt(n,self.localName,i)
-        print("success"..n)
+        --print("success"..n)
         return n
     end
     for i=1,16 do
@@ -147,15 +147,15 @@ function CraftManager:craftItemsExt(name,count,dest,destSlot)
                 end
             end
             if craft_error then
-                print("Craft Error")
+                --print("Craft Error")
                 break
             else
                 crafted = crafted + n
-                print("crafted "..crafted.." of "..count)
+                --print("crafted "..crafted.." of "..count)
                 self.invMgr:pullItemsExt(name,n,dest,destSlot)
             end
         else
-            print("No sequence found")
+            --print("No sequence found")
             break
         end
     end
@@ -171,4 +171,15 @@ function CraftManager:pullOrCraftItemsExt(name,count,dest,destSlot)
         return m + n
     end
     return n
+end
+
+function CraftManager:scanItemsCraftable()
+    local items = self.invMgr:scanItems()
+    for k,recipe in pairs(self.recipes) do
+        if not items[recipe.name] then
+            items[recipe.name] = self.invMgr:itemCreate(recipe.name,0)
+        end
+    end
+    print(items)
+    return items
 end

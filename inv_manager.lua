@@ -1,13 +1,35 @@
 local p = peripheral.getNames()
 
-local function itemCreate(name,count)
-    return {
-        name=name,
-        count=count
-    }
+InvManager = {}
+
+function InvManager:new()    
+    return setmetatable({itemDB={}},{__index=self})
 end
 
-local function detailsCreate(details)
+function InvManager:itemCreate(name,count)
+    local i = {
+        name=name,
+        count=count,
+        displayName=name
+    }
+    print("scanning "..name)
+    for k,v in pairs(self.itemDB) do
+        print(k .. v.displayName)
+    end
+    if self.itemDB[name] then
+        i.displayName = self.itemDB[name].displayName
+        print("found")
+    else
+        print("not found")
+    end
+    return i
+end
+
+-- Assumptions made here:
+-- Items of an ID always have the same name, tags, and maximum count
+-- This is not true for display names! (See CC computers)
+-- TODO: Do this better
+function InvManager:detailsCreate(details)
     local d = {
         displayName=details.displayName,
         maxCount=details.maxCount,
@@ -16,28 +38,22 @@ local function detailsCreate(details)
     return d
 end
 
-InvManager = {}
-
-function InvManager:new()    
-    return setmetatable({itemDB={}},{__index=self})
-end
-
 function InvManager:scanInventory(invName, inv, items)    
     local inv_items = inv.list()
     for slot,item in pairs(inv_items) do
+        self:updateDB(inv,slot,item)
         if not items[item.name] then
-            items[item.name] = itemCreate(item.name,0)
+            items[item.name] = self:itemCreate(item.name,0)
         end
         items[item.name].count = items[item.name].count + item.count
-        self:updateDB(inv,slot,item)
     end
 end
 
 function InvManager:updateDB(inv,slot,item)
     if not self.itemDB[item.name] then
         local details = inv.getItemDetail(slot)
-        print("made entry for"..item.name)
-        self.itemDB[item.name] = detailsCreate(details)
+        --print("made entry for "..item.name)
+        self.itemDB[item.name] = self:detailsCreate(details)
     end
 end
 
