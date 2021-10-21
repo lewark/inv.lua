@@ -1,5 +1,8 @@
 local p = peripheral.getNames()
 
+-- TODO: Maybe implement caching of item locations to speed up operations
+--  on large storage networks?
+
 InvManager = {}
 
 function InvManager:new()    
