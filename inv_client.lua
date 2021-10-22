@@ -16,7 +16,9 @@ function ClientUI:init(serverID)
     ClientUI.superClass.init(self)
     
     self.serverID = serverID
-    self.localName = getNameLocal()
+    if turtle then
+        self.localName = getNameLocal()
+    end
     self.sidebarWidth = math.floor(self.size[1] / 3)
     self.items = {}
     self.shiftPressed = false
@@ -24,23 +26,11 @@ function ClientUI:init(serverID)
     self.vbox = gui.LinearContainer:new(self,2,1,1)
     self.hbox = gui.LinearContainer:new(self,1,0,0)
     self.btnBox = gui.LinearContainer:new(self,1,1,0)
-    self.spinBox = gui.LinearContainer:new(self,1,1,0)
     
     self.lbl = gui.Label:new(self,"[Nothing]")
     self.lbl.length = self.sidebarWidth
     self.lbl2 = gui.Label:new(self,"Count: 0")
     self.lbl2.length = self.sidebarWidth
-    self.field = gui.TextField:new(self,4,"1")
-    self.btnReq = gui.Button:new(self,"Request")
-    self.list = gui.ListBox:new(self,10,10,{})
-    self.sb = gui.ScrollBar:new(self,self.list)
-    
-    self.btnPrevSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_LEFT))
-    self.btnNextSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_RIGHT))
-    self.btnStore = gui.Button:new(self,"Store")
-    self.btnRefresh = gui.Button:new(self,"Refresh")
-    self.btnPlus = gui.Button:new(self,"+")
-    self.btnMinus = gui.Button:new(self,"-")
 
     self:addChild(self.hbox)
     
@@ -51,17 +41,34 @@ function ClientUI:init(serverID)
     self.vbox:addChild(self.btnRefresh,false,true,gui.LinearAlign.START)
     self.vbox:addChild(self.lbl,false,true,gui.LinearAlign.START)
     self.vbox:addChild(self.lbl2,false,true,gui.LinearAlign.START)
-    self.vbox:addChild(self.spinBox,false,true,gui.LinearAlign.START)
-    self.vbox:addChild(self.btnReq,false,true,gui.LinearAlign.START)
-    self.vbox:addChild(self.btnBox,false,true,gui.LinearAlign.START)
     
-    self.btnBox:addChild(self.btnPrevSlot,false,false,gui.LinearAlign.START)
-    self.btnBox:addChild(self.btnStore,true,false,gui.LinearAlign.START)
-    self.btnBox:addChild(self.btnNextSlot,false,false,gui.LinearAlign.START)
+    self.list = gui.ListBox:new(self,10,10,{})
+    self.sb = gui.ScrollBar:new(self,self.list)
     
-    self.spinBox:addChild(self.btnMinus,false,false,gui.LinearAlign.START)
-    self.spinBox:addChild(self.field,true,false,gui.LinearAlign.START)
-    self.spinBox:addChild(self.btnPlus,false,false,gui.LinearAlign.START)
+    if turtle then
+        self.spinBox = gui.LinearContainer:new(self,1,1,0)
+        self.field = gui.TextField:new(self,4,"1")
+        self.btnReq = gui.Button:new(self,"Request")
+    
+        self.btnPrevSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_LEFT))
+        self.btnNextSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_RIGHT))
+        self.btnStore = gui.Button:new(self,"Store")
+        self.btnRefresh = gui.Button:new(self,"Refresh")
+        self.btnPlus = gui.Button:new(self,"+")
+        self.btnMinus = gui.Button:new(self,"-")
+        
+        self.vbox:addChild(self.spinBox,false,true,gui.LinearAlign.START)
+        self.vbox:addChild(self.btnReq,false,true,gui.LinearAlign.START)
+        self.vbox:addChild(self.btnBox,false,true,gui.LinearAlign.START)
+        
+        self.btnBox:addChild(self.btnPrevSlot,false,false,gui.LinearAlign.START)
+        self.btnBox:addChild(self.btnStore,true,false,gui.LinearAlign.START)
+        self.btnBox:addChild(self.btnNextSlot,false,false,gui.LinearAlign.START)
+        
+        self.spinBox:addChild(self.btnMinus,false,false,gui.LinearAlign.START)
+        self.spinBox:addChild(self.field,true,false,gui.LinearAlign.START)
+        self.spinBox:addChild(self.btnPlus,false,false,gui.LinearAlign.START)
+    end
     
     function self.list.onSelectionChanged(list)
         if self.list.selected >= 1 and self.list.selected <= #self.items then
@@ -76,55 +83,57 @@ function ClientUI:init(serverID)
         self:onLayout()
     end
     
-    function self.btnReq.onPressed(btn)
-        if self.list.selected >= 1 and self.list.selected <= #self.items then
-            local item = self.items[self.list.selected]
-            local count = tonumber(self.field.text) or 0
-            self:serverCall("pullOrCraftItemsExt",{item.name,count,self.localName,nil})
-            self:fetchItems()
-            self.list:onSelectionChanged()
-        end
-    end
-
     function self.btnRefresh.onPressed(btn)
         self:fetchItems()
         self.list:onSelectionChanged()
     end
     
-    function self.btnStore.onPressed(btn)
-        if self.shiftPressed then
-            for i=1,16 do
-                self:depositSlot(i)
+    if turtle then
+        function self.btnReq.onPressed(btn)
+            if self.list.selected >= 1 and self.list.selected <= #self.items then
+                local item = self.items[self.list.selected]
+                local count = tonumber(self.field.text) or 0
+                self:serverCall("pullOrCraftItemsExt",{item.name,count,self.localName,nil})
+                self:fetchItems()
+                self.list:onSelectionChanged()
             end
-        else
-            self:depositSlot(turtle.getSelectedSlot())
         end
-        self:fetchItems()
-        self.list:onSelectionChanged()
-    end
     
-    function self.btnPrevSlot.onPressed(btn)
-        local n = (self.shiftPressed and 4) or 1
-        self:moveSelection(-n)
-    end
-    
-    function self.btnNextSlot.onPressed(btn)
-        local n = (self.shiftPressed and 4) or 1
-        self:moveSelection(n)
-    end
-    
-    function self.btnPlus.onPressed(btn)
-        local n = tonumber(self.field.text) or 0
-        local mod = (self.shiftPressed and 64) or 1
-        self.field.text = tostring(math.max(n+mod,0))
-        self.field.dirty = true
-    end
-    
-    function self.btnMinus.onPressed(btn)
-        local n = tonumber(self.field.text) or 0
-        local mod = (self.shiftPressed and 64) or 1
-        self.field.text = tostring(math.max(n-mod,0))
-        self.field.dirty = true
+        function self.btnStore.onPressed(btn)
+            if self.shiftPressed then
+                for i=1,16 do
+                    self:depositSlot(i)
+                end
+            else
+                self:depositSlot(turtle.getSelectedSlot())
+            end
+            self:fetchItems()
+            self.list:onSelectionChanged()
+        end
+        
+        function self.btnPrevSlot.onPressed(btn)
+            local n = (self.shiftPressed and 4) or 1
+            self:moveSelection(-n)
+        end
+        
+        function self.btnNextSlot.onPressed(btn)
+            local n = (self.shiftPressed and 4) or 1
+            self:moveSelection(n)
+        end
+        
+        function self.btnPlus.onPressed(btn)
+            local n = tonumber(self.field.text) or 0
+            local mod = (self.shiftPressed and 64) or 1
+            self.field.text = tostring(math.max(n+mod,0))
+            self.field.dirty = true
+        end
+        
+        function self.btnMinus.onPressed(btn)
+            local n = tonumber(self.field.text) or 0
+            local mod = (self.shiftPressed and 64) or 1
+            self.field.text = tostring(math.max(n-mod,0))
+            self.field.dirty = true
+        end
     end
     
     self:fetchItems()
