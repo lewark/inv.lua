@@ -2,7 +2,7 @@ require 'inv_manager'
 require 'inv_common'
 require 'craft_manager'
 
-local file = io.open("CCLua/inv2/recipes/minecraft.json","r")
+local file = io.open(shell.dir().."/recipes/minecraft.json","r")
 local data = file:read("*all")
 --print(data)
 recipes = textutils.unserialiseJSON(data)

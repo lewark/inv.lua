@@ -3,12 +3,19 @@ local gui = require 'gui'
 
 --print(textutils.serialize(serverCall(0,"pullOrCraftItemsExt",{"minecraft:stick",10,"turtle_1",1})))
 
+local config_path = shell.dir().."/client.json"
+
+local file = io.open(config_path,"r")
+local data = file:read("*all")
+local config = textutils.unserialiseJSON(data)
+file:close()
+
 local ClientUI = gui.Root:subclass()
 
-function ClientUI:init()
+function ClientUI:init(serverID)
     ClientUI.superClass.init(self)
     
-    self.serverID = 0
+    self.serverID = serverID
     self.localName = getNameLocal()
     self.sidebarWidth = math.floor(self.size[1] / 3)
     
@@ -99,6 +106,6 @@ function ClientUI:fetchItems()
 end
 
 rednet.open(getModemSide())
-local root = ClientUI:new()
+local root = ClientUI:new(config.serverID)
 root:mainLoop()
 rednet.close(getModemSide())
