@@ -5,8 +5,18 @@ local p = peripheral.getNames()
 
 InvManager = {}
 
-function InvManager:new()    
-    return setmetatable({itemDB={}},{__index=self})
+function InvManager:new(overrides)
+    mgr = {itemDB={},type_overrides={},name_overrides={}}
+    
+    for _,v in pairs(overrides) do
+        if v.type then
+            mgr.type_overrides[v.type] = v
+        elseif v.name then
+            mgr.name_overrides[v.name] = v
+        end
+    end
+
+    return setmetatable(mgr,{__index=self})
 end
 
 function InvManager:itemCreate(name,count)
@@ -60,22 +70,32 @@ function InvManager:updateDB(inv,slot,item)
     end
 end
 
+function InvManager:getPriority(inv)
+    if self.name_overrides[inv.name] and self.name_overrides[inv.name].priority then
+        return self.name_overrides[inv.name].priority
+    elseif self.type_overrides[inv.type] and self.type_overrides[inv.type].priority then
+        return self.type_overrides[inv.type].priority
+    end
+    return 0
+end
+
 function InvManager:getInventories()
     local invs = {}
     for i,name in pairs(peripheral.getNames()) do
         local inv = peripheral.wrap(name)
         if inv.list then
-            invs[name] = inv
+            table.insert(invs,{name=name,inv=inv,type=peripheral.getType(name)})
         end
     end
+    table.sort(invs, function(a,b) return (self:getPriority(a) > self:getPriority(b)) or (a.name < b.name) end)
     return invs
 end
 
 -- Returns a list of all items stored in the system
 function InvManager:scanItems()
     items = {}
-    for name,inventory in pairs(self:getInventories()) do
-        self:scanInventory(name,inventory,items)
+    for i,inventory in ipairs(self:getInventories()) do
+        self:scanInventory(inventory.name,inventory.inv,items)
     end
     return items
 end
@@ -102,7 +122,8 @@ end
 
 function InvManager:pullItemsByTag(tag,count,dest,destSlot)
     local moved = 0
-    for invName,inv in pairs(self:getInventories()) do
+    for i,inventory in ipairs(self:getInventories()) do
+        local inv = inventory.inv
         local items = inv.list()
         for slot,item in pairs(items) do
             self:updateDB(inv,slot,item)
@@ -154,7 +175,8 @@ function InvManager:pushItemsExt(count,src,srcSlot)
     --local srcInv = peripheral.wrap(src)
     --local srcDetail = src.getItemDetail(srcSlot)
     
-    for invName,inv in pairs(self:getInventories()) do
+    for i,inventory in ipairs(self:getInventories()) do
+        local inv = inventory.inv
         local toMove = count - moved
         local n = inv.pullItems(src, srcSlot, toMove)
         moved = moved + n

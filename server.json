@@ -1,0 +1,8 @@
+{
+    "overrides":[
+        {
+            "type":"storagedrawers:controller",
+            "priority":3
+        }
+    ]
+}

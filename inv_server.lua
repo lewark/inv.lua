@@ -2,15 +2,21 @@ require 'inv_manager'
 require 'inv_common'
 require 'craft_manager'
 
-local file = io.open(shell.dir().."/recipes/minecraft.json","r")
+local config_path = shell.dir().."/server.json"
+local file = io.open(config_path,"r")
 local data = file:read("*all")
+local config = textutils.unserialiseJSON(data)
+file:close()
+
+file = io.open(shell.dir().."/recipes/minecraft.json","r")
+data = file:read("*all")
 --print(data)
-recipes = textutils.unserialiseJSON(data)
+local recipes = textutils.unserialiseJSON(data)
 file:close()
 
 --print(textutils.serialize(recipes))
 
-mgr = InvManager:new()
+mgr = InvManager:new(config.overrides or {})
 cmgr = CraftManager:new(mgr, recipes)
 
 --print(cmgr:pullOrCraftItemsExt("minecraft:wooden_pickaxe",10,"turtle_1",1))

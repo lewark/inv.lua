@@ -2,7 +2,7 @@ PROTOCOL = "inv"
 
 function getModemSide()
     for _, side in pairs({"top","bottom","left","right","front","back"}) do
-        if peripheral.getType(side) == "modem" then
+        if peripheral.getType(side) == "modem" and peripheral.wrap(side).getNameLocal then
             return side --peripheral.wrap(side)
         end
     end
