@@ -87,7 +87,7 @@ function InvManager:getInventories()
             table.insert(invs,{name=name,inv=inv,type=peripheral.getType(name)})
         end
     end
-    table.sort(invs, function(a,b) return (self:getPriority(a) > self:getPriority(b)) or (a.name < b.name) end)
+    table.sort(invs, function(a,b) return (a.name < b.name) and not (self:getPriority(a) < self:getPriority(b)) end)
     return invs
 end
 
@@ -104,7 +104,8 @@ end
 -- destSlot is optional
 function InvManager:pullItemsExt(name,count,dest,destSlot)
     local moved = 0
-    for invName,inv in pairs(self:getInventories()) do
+    for i,inventory in ipairs(self:getInventories()) do
+        local inv = inventory.inv
         local items = inv.list()
         for slot,item in pairs(items) do
             if item.name == name then
