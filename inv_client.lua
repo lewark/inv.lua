@@ -25,8 +25,10 @@ function ClientUI:init(serverID)
     
     self.vbox = gui.LinearContainer:new(self,2,1,1)
     self.hbox = gui.LinearContainer:new(self,1,0,0)
-    self.btnBox = gui.LinearContainer:new(self,1,1,0)
     
+    self.list = gui.ListBox:new(self,10,10,{})
+    self.sb = gui.ScrollBar:new(self,self.list)
+
     self.lbl = gui.Label:new(self,"[Nothing]")
     self.lbl.length = self.sidebarWidth
     self.lbl2 = gui.Label:new(self,"Count: 0")
@@ -42,11 +44,11 @@ function ClientUI:init(serverID)
     self.vbox:addChild(self.lbl,false,true,gui.LinearAlign.START)
     self.vbox:addChild(self.lbl2,false,true,gui.LinearAlign.START)
     
-    self.list = gui.ListBox:new(self,10,10,{})
-    self.sb = gui.ScrollBar:new(self,self.list)
     
     if turtle then
         self.spinBox = gui.LinearContainer:new(self,1,1,0)
+        self.btnBox = gui.LinearContainer:new(self,1,1,0)
+        
         self.field = gui.TextField:new(self,4,"1")
         self.btnReq = gui.Button:new(self,"Request")
     
@@ -56,11 +58,7 @@ function ClientUI:init(serverID)
         self.btnRefresh = gui.Button:new(self,"Refresh")
         self.btnPlus = gui.Button:new(self,"+")
         self.btnMinus = gui.Button:new(self,"-")
-        
-        self.vbox:addChild(self.spinBox,false,true,gui.LinearAlign.START)
-        self.vbox:addChild(self.btnReq,false,true,gui.LinearAlign.START)
-        self.vbox:addChild(self.btnBox,false,true,gui.LinearAlign.START)
-        
+                
         self.btnBox:addChild(self.btnPrevSlot,false,false,gui.LinearAlign.START)
         self.btnBox:addChild(self.btnStore,true,false,gui.LinearAlign.START)
         self.btnBox:addChild(self.btnNextSlot,false,false,gui.LinearAlign.START)
@@ -68,6 +66,10 @@ function ClientUI:init(serverID)
         self.spinBox:addChild(self.btnMinus,false,false,gui.LinearAlign.START)
         self.spinBox:addChild(self.field,true,false,gui.LinearAlign.START)
         self.spinBox:addChild(self.btnPlus,false,false,gui.LinearAlign.START)
+        
+        self.vbox:addChild(self.spinBox,false,true,gui.LinearAlign.START)
+        self.vbox:addChild(self.btnReq,false,true,gui.LinearAlign.START)
+        self.vbox:addChild(self.btnBox,false,true,gui.LinearAlign.START)
     end
     
     function self.list.onSelectionChanged(list)
