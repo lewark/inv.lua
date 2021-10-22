@@ -29,6 +29,7 @@ function ClientUI:init(serverID)
     self.list = gui.ListBox:new(self,10,10,{})
     self.sb = gui.ScrollBar:new(self,self.list)
 
+    self.btnRefresh = gui.Button:new(self,"Refresh")
     self.lbl = gui.Label:new(self,"[Nothing]")
     self.lbl.length = self.sidebarWidth
     self.lbl2 = gui.Label:new(self,"Count: 0")
@@ -44,7 +45,6 @@ function ClientUI:init(serverID)
     self.vbox:addChild(self.lbl,false,true,gui.LinearAlign.START)
     self.vbox:addChild(self.lbl2,false,true,gui.LinearAlign.START)
     
-    
     if turtle then
         self.spinBox = gui.LinearContainer:new(self,1,1,0)
         self.btnBox = gui.LinearContainer:new(self,1,1,0)
@@ -55,7 +55,6 @@ function ClientUI:init(serverID)
         self.btnPrevSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_LEFT))
         self.btnNextSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_RIGHT))
         self.btnStore = gui.Button:new(self,"Store")
-        self.btnRefresh = gui.Button:new(self,"Refresh")
         self.btnPlus = gui.Button:new(self,"+")
         self.btnMinus = gui.Button:new(self,"-")
                 
@@ -76,11 +75,15 @@ function ClientUI:init(serverID)
         if self.list.selected >= 1 and self.list.selected <= #self.items then
             self.lbl.text = self.items[self.list.selected].displayName
             self.lbl2.text = "Count: "..self.items[self.list.selected].count
-            self.btnReq.enabled = true
+            if turtle then
+                self.btnReq.enabled = true
+            end
         else
             self.lbl.text = "[Nothing]"
             self.lbl2.text = "Count: 0"
-            self.btnReq.enabled = false
+            if turtle then
+                self.btnReq.enabled = false
+            end
         end
         self:onLayout()
     end
@@ -144,24 +147,28 @@ end
 function ClientUI:onKeyDown(key,held)
     if key == keys.leftShift and not held then
         self.shiftPressed = true
-        self.btnStore.text = "S.All"
-        self.btnStore.dirty = true
-        self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_UP)
-        self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_DOWN)
-        self.btnPrevSlot.dirty = true
-        self.btnNextSlot.dirty = true
+        if turtle then
+            self.btnStore.text = "S.All"
+            self.btnStore.dirty = true
+            self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_UP)
+            self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_DOWN)
+            self.btnPrevSlot.dirty = true
+            self.btnNextSlot.dirty = true
+        end
     end
 end
 
 function ClientUI:onKeyUp(key)
     if key == keys.leftShift then
         self.shiftPressed = false
-        self.btnStore.text = "Store"
-        self.btnStore.dirty = true
-        self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_LEFT)
-        self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_RIGHT)
-        self.btnPrevSlot.dirty = true
-        self.btnNextSlot.dirty = true
+        if turtle then
+            self.btnStore.text = "Store"
+            self.btnStore.dirty = true
+            self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_LEFT)
+            self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_RIGHT)
+            self.btnPrevSlot.dirty = true
+            self.btnNextSlot.dirty = true
+        end
     end
 end
 
