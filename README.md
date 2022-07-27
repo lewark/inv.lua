@@ -2,15 +2,16 @@
 
 Inventory management system for CC:Tweaked. Supports recursive autocrafting but is largely untested. Use with caution. 
 
-# Installation
+## Installation
 
 Currently, the easiest way to install inv.lua is using [gitget](http://www.computercraft.info/forums2/index.php?/topic/17387-gitget-version-2-release/).
 ```
+pastebin get W5ZkVYSi gitget
 gitget knector01 inv.lua master inv
 cd inv
 ```
 
-# Usage
+## Usage
 
 This system requires that CC:Tweaked generic peripherals be enabled. Recent versions enable this feature by default but for older ones you may need to change a setting in `computercraft_server.toml`.
 
@@ -24,7 +25,7 @@ You can then use the client turtle's GUI to request items from the storage netwo
 
 The turtles and chests can be placed anywhere as long as they are connected by cables, and an arbitrary number of client turtles can be connected.
 
-# Troubleshooting
+## Troubleshooting
 
 Make sure to use `cd` to enter the `inv` folder before running the client or server.
 
