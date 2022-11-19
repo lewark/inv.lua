@@ -1,15 +1,14 @@
-require 'inv_common'
-require 'inv_manager'
+local common = require 'inv_common'
+local manager = require 'inv_manager'
 
 local expect = require "cc.expect"
 local expect, field = expect.expect, expect.field
 
-CraftManager = {}
+local CraftManager = { }
 
 function CraftManager:new(invMgr,recipes)
-    return setmetatable({itemDB={},invMgr=invMgr,recipes=recipes,localName=getNameLocal()},{__index=self})
+    return setmetatable({itemDB={},invMgr=invMgr,recipes=recipes,localName=common.getNameLocal()},{__index=self})
 end
-
 
 function CraftManager:itemMatches(item,criteria)
     expect(1, item, "table")
@@ -32,7 +31,7 @@ function CraftManager:findRecipeSequence(item,items)
     for k,recipe in pairs(self.recipes) do
         if self:itemMatches(recipe,item) then
             local combo = {}
-            local items2 = deepCopy(items)
+            local items2 = common.deepCopy(items)
             --print(textutils.serialize(items2))
             local recipe_valid = true
             for slot,ingredient in pairs(recipe.ingredients) do
@@ -183,3 +182,5 @@ function CraftManager:scanItemsCraftable()
     print(items)
     return items
 end
+
+return CraftManager

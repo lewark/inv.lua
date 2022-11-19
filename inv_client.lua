@@ -1,14 +1,9 @@
-require 'inv_common'
+local common = require 'inv_common'
 local gui = require 'gui'
 
 --print(textutils.serialize(serverCall(0,"pullOrCraftItemsExt",{"minecraft:stick",10,"turtle_1",1})))
 
-local config_path = shell.dir().."/client.json"
-
-local file = io.open(config_path,"r")
-local data = file:read("*all")
-local config = textutils.unserialiseJSON(data)
-file:close()
+local config_path = "client.json"
 
 local ClientUI = gui.Root:subclass()
 
@@ -17,7 +12,7 @@ function ClientUI:init(serverID)
     
     self.serverID = serverID
     if turtle then
-        self.localName = getNameLocal()
+        self.localName = common.getNameLocal()
     end
     self.sidebarWidth = math.floor(self.size[1] / 3)
     self.items = {}
@@ -52,12 +47,14 @@ function ClientUI:init(serverID)
         self.field = gui.TextField:new(self,4,"1")
         self.btnReq = gui.Button:new(self,"Request")
     
-        self.btnPrevSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_LEFT))
-        self.btnNextSlot = gui.Button:new(self,string.char(gui.SpecialChars.TRI_RIGHT))
-        self.btnStore = gui.Button:new(self,"Store")
+        self.btnPrevSlot = gui.Button:new(self,"")
+        self.btnNextSlot = gui.Button:new(self,"")
+        self.btnStore = gui.Button:new(self,"")
         self.btnPlus = gui.Button:new(self,"+")
         self.btnMinus = gui.Button:new(self,"-")
-                
+        
+        self:setModifier(false)
+        
         self.btnBox:addChild(self.btnPrevSlot,false,false,gui.LinearAlign.START)
         self.btnBox:addChild(self.btnStore,true,false,gui.LinearAlign.START)
         self.btnBox:addChild(self.btnNextSlot,false,false,gui.LinearAlign.START)
@@ -144,31 +141,33 @@ function ClientUI:init(serverID)
     self:fetchItems()
 end
 
-function ClientUI:onKeyDown(key,held)
-    if (key == keys.leftShift or key == keys.leftCtrl) and not held then
-        self.modPressed = true
-        if turtle then
+function ClientUI:setModifier(mod)
+    self.modPressed = mod
+    if turtle then
+        if mod then
             self.btnStore.text = "S.All"
-            self.btnStore.dirty = true
             self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_UP)
             self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_DOWN)
-            self.btnPrevSlot.dirty = true
-            self.btnNextSlot.dirty = true
+        else
+            self.btnStore.text = "Store"
+            self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_LEFT)
+            self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_RIGHT)
         end
+        self.btnStore.dirty = true
+        self.btnPrevSlot.dirty = true
+        self.btnNextSlot.dirty = true
+    end
+end
+
+function ClientUI:onKeyDown(key,held)
+    if (key == keys.leftShift or key == keys.leftCtrl) and not held then
+        self:setModifier(true)
     end
 end
 
 function ClientUI:onKeyUp(key)
     if (key == keys.leftShift or key == keys.leftCtrl) then
-        self.modPressed = false
-        if turtle then
-            self.btnStore.text = "Store"
-            self.btnStore.dirty = true
-            self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_LEFT)
-            self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_RIGHT)
-            self.btnPrevSlot.dirty = true
-            self.btnNextSlot.dirty = true
-        end
+        self:setModifier(false)
     end
 end
 
@@ -176,7 +175,7 @@ function ClientUI:serverCall(func, args)
     rednet.send(self.serverID, {func, args})
     while true do
         -- TODO: Properly utilize coroutines
-        id, message = rednet.receive(PROTOCOL)
+        id, message = rednet.receive(common.PROTOCOL)
         if id == self.serverID then
             return message
         end
@@ -213,7 +212,12 @@ function ClientUI:moveSelection(n)
     turtle.select(slot)
 end
 
-rednet.open(getModemSide())
-local root = ClientUI:new(config.serverID)
-root:mainLoop()
-rednet.close(getModemSide())
+local function main()
+    local config = common.loadJSON(config_path)
+    rednet.open(common.getModemSide())
+    local root = ClientUI:new(config.serverID)
+    root:mainLoop()
+    rednet.close(common.getModemSide())
+end
+
+main()

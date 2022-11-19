@@ -1,9 +1,7 @@
-local p = peripheral.getNames()
-
 -- TODO: Maybe implement caching of item locations to speed up operations
 --  on large storage networks?
 
-InvManager = {}
+local InvManager = {}
 
 function InvManager:new(overrides)
     mgr = {itemDB={},type_overrides={},name_overrides={}}
@@ -188,3 +186,4 @@ function InvManager:pushItemsExt(count,src,srcSlot)
     return moved
 end
 
+return InvManager
