@@ -21,7 +21,7 @@ function ClientUI:init(serverID)
     end
     self.sidebarWidth = math.floor(self.size[1] / 3)
     self.items = {}
-    self.shiftPressed = false
+    self.modPressed = false
     
     self.vbox = gui.LinearContainer:new(self,2,1,1)
     self.hbox = gui.LinearContainer:new(self,1,0,0)
@@ -105,7 +105,7 @@ function ClientUI:init(serverID)
         end
     
         function self.btnStore.onPressed(btn)
-            if self.shiftPressed then
+            if self.modPressed then
                 for i=1,16 do
                     self:depositSlot(i)
                 end
@@ -117,25 +117,25 @@ function ClientUI:init(serverID)
         end
         
         function self.btnPrevSlot.onPressed(btn)
-            local n = (self.shiftPressed and 4) or 1
+            local n = (self.modPressed and 4) or 1
             self:moveSelection(-n)
         end
         
         function self.btnNextSlot.onPressed(btn)
-            local n = (self.shiftPressed and 4) or 1
+            local n = (self.modPressed and 4) or 1
             self:moveSelection(n)
         end
         
         function self.btnPlus.onPressed(btn)
             local n = tonumber(self.field.text) or 0
-            local mod = (self.shiftPressed and 64) or 1
+            local mod = (self.modPressed and 64) or 1
             self.field.text = tostring(math.max(n+mod,0))
             self.field.dirty = true
         end
         
         function self.btnMinus.onPressed(btn)
             local n = tonumber(self.field.text) or 0
-            local mod = (self.shiftPressed and 64) or 1
+            local mod = (self.modPressed and 64) or 1
             self.field.text = tostring(math.max(n-mod,0))
             self.field.dirty = true
         end
@@ -145,8 +145,8 @@ function ClientUI:init(serverID)
 end
 
 function ClientUI:onKeyDown(key,held)
-    if key == keys.leftShift and not held then
-        self.shiftPressed = true
+    if (key == keys.leftShift or key == keys.leftCtrl) and not held then
+        self.modPressed = true
         if turtle then
             self.btnStore.text = "S.All"
             self.btnStore.dirty = true
@@ -159,8 +159,8 @@ function ClientUI:onKeyDown(key,held)
 end
 
 function ClientUI:onKeyUp(key)
-    if key == keys.leftShift then
-        self.shiftPressed = false
+    if (key == keys.leftShift or key == keys.leftCtrl) then
+        self.modPressed = false
         if turtle then
             self.btnStore.text = "Store"
             self.btnStore.dirty = true
