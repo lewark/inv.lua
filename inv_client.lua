@@ -1,4 +1,4 @@
-local common = require 'inv_common'
+local Common = require 'inv_common'
 local gui = require 'gui'
 
 --print(textutils.serialize(serverCall(0,"pullOrCraftItemsExt",{"minecraft:stick",10,"turtle_1",1})))
@@ -12,7 +12,7 @@ function ClientUI:init(serverID)
     
     self.serverID = serverID
     if turtle then
-        self.localName = common.getNameLocal()
+        self.localName = Common.getNameLocal()
     end
     self.sidebarWidth = math.floor(self.size[1] / 3)
     self.items = {}
@@ -175,7 +175,7 @@ function ClientUI:serverCall(func, args)
     rednet.send(self.serverID, {func, args})
     while true do
         -- TODO: Properly utilize coroutines
-        id, message = rednet.receive(common.PROTOCOL)
+        id, message = rednet.receive(Common.PROTOCOL)
         if id == self.serverID then
             return message
         end
@@ -213,11 +213,11 @@ function ClientUI:moveSelection(n)
 end
 
 local function main()
-    local config = common.loadJSON(config_path)
-    rednet.open(common.getModemSide())
+    local config = Common.loadJSON(config_path)
+    rednet.open(Common.getModemSide())
     local root = ClientUI:new(config.serverID)
     root:mainLoop()
-    rednet.close(common.getModemSide())
+    rednet.close(Common.getModemSide())
 end
 
 main()

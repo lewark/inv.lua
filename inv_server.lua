@@ -1,10 +1,10 @@
 local InvManager = require 'inv_manager'
-local common = require 'inv_common'
+local Common = require 'inv_common'
 local CraftManager = require 'craft_manager'
 
 local function main()
-    local config = common.loadJSON("server.json")
-    local recipes = common.loadJSON("recipes/minecraft.json")
+    local config = Common.loadJSON("server.json")
+    local recipes = Common.loadJSON("recipes/minecraft.json")
 
     --print(textutils.serialize(recipes))
 
@@ -16,8 +16,8 @@ local function main()
     --print(textutils.serialize(cmgr:scanItemsCraftable()))
     --print(textutils.serialize(mgr.itemDB))
 
-    rednet.open(common.getModemSide())
-    --rednet.host(common.PROTOCOL,os.getComputerLabel())
+    rednet.open(Common.getModemSide())
+    --rednet.host(Common.PROTOCOL,os.getComputerLabel())
     while true do
         evt = {os.pullEventRaw()}
         --print(textutils.serialize(evt))
@@ -25,9 +25,9 @@ local function main()
             local msg = evt[3]
             if cmgr[msg[1]] then
                 print("Calling CraftManager")
-                rednet.send(evt[2],cmgr[msg[1]](cmgr,unpack(msg[2])),common.PROTOCOL)
+                rednet.send(evt[2],cmgr[msg[1]](cmgr,unpack(msg[2])),Common.PROTOCOL)
             elseif mgr[msg[1]] then
-                rednet.send(evt[2],mgr[msg[1]](mgr,unpack(msg[2])),common.PROTOCOL)
+                rednet.send(evt[2],mgr[msg[1]](mgr,unpack(msg[2])),Common.PROTOCOL)
             else
                 --print("Unknown command "..msg[1])
             end
@@ -35,8 +35,8 @@ local function main()
             return
         end
     end
-    --rednet.unhost(common.PROTOCOL)
-    rednet.close(common.getModemSide())
+    --rednet.unhost(Common.PROTOCOL)
+    rednet.close(Common.getModemSide())
 end
 
 main()
