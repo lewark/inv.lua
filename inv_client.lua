@@ -2,6 +2,7 @@ local Common = require 'inv_common'
 
 local Button = require 'gui.Button'
 local Constants = require 'gui.Constants'
+local Label = require 'gui.Label'
 local LinearContainer = require 'gui.LinearContainer'
 local ListBox = require 'gui.ListBox'
 local Root = require 'gui.Root'
