@@ -154,12 +154,12 @@ function ClientUI:setModifier(mod)
     if turtle then
         if mod then
             self.btnStore.text = "S.All"
-            self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_UP)
-            self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_DOWN)
+            self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_UP)
+            self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_DOWN)
         else
             self.btnStore.text = "Store"
-            self.btnPrevSlot.text = string.char(gui.SpecialChars.TRI_LEFT)
-            self.btnNextSlot.text = string.char(gui.SpecialChars.TRI_RIGHT)
+            self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_LEFT)
+            self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_RIGHT)
         end
         self.btnStore.dirty = true
         self.btnPrevSlot.dirty = true
