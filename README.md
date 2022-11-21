@@ -2,7 +2,7 @@
 
 # inv.lua
 
-Inventory management system for CC:Tweaked. Supports recursive autocrafting but is largely untested. Use with caution.
+Inventory management system for ComputerCraft:Tweaked / Restitched. Supports recursive autocrafting but is largely untested. Use with caution.
 
 This software's UI was made using my [gui.lua](https://github.com/knector01/gui.lua) toolkit.
 

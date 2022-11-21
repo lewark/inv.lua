@@ -119,6 +119,7 @@ function InvManager:pullItemsExt(name,count,dest,destSlot)
     return moved
 end
 
+-- TODO: this is duplicated, might want to use a lambda function or something
 function InvManager:pullItemsByTag(tag,count,dest,destSlot)
     local moved = 0
     for i,inventory in ipairs(self:getInventories()) do

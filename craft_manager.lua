@@ -89,6 +89,7 @@ function CraftManager:tryCraftRecipe(recipe)
     local success = true
     for slot,item in pairs(recipe.ingredients) do
         slot = tonumber(slot)
+        -- TODO: maybe split up this line
         local destSlot = (slot - 1) % 3 + (math.floor((slot - 1) / 3) * 4) + 1
         local n = 0
         if item.name then
