@@ -190,6 +190,16 @@ function ClientUI:serverCall(func, args)
     end
 end
 
+local function padToWidth(str, n)
+    local l = #str
+    if l > n then
+        return str:sub(1, n)
+    elseif l < n then
+        return str .. string.rep(" ",n-l)
+    end
+    return str
+end
+
 function ClientUI:fetchItems()
     --print("started fetch")
     local itemsByName = self:serverCall("scanItemsCraftable",{})
@@ -201,7 +211,15 @@ function ClientUI:fetchItems()
     -- TODO: Do based on name or displayName?
     table.sort(self.items, function(a, b) return a.displayName:lower() < b.displayName:lower() end)
     for k,v in pairs(self.items) do
-        table.insert(self.list.items,v.displayName.." (x"..v.count..")")
+        local count = "x" .. tostring(v.count)
+        local line = padToWidth(v.displayName,self.list.size[1]-#count)
+        --if count >= 1000 then
+        --    count = floor(count / 1000)
+        --    line = line .. "x" .. count .. "k"
+        --else
+        --    line = line .. "x" .. count
+        --end
+        table.insert(self.list.items,line .. count)
     end
     --print("finished fetch")
     self:onLayout()
