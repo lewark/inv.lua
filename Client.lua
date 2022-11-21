@@ -200,6 +200,18 @@ local function padToWidth(str, n)
     return str
 end
 
+local function formatCount(n)
+    local suffix = ""
+    if n >= 1000000 then
+        n = math.floor(n / 1000000)
+        suffix = "M"
+    elseif n >= 1000 then
+        n = math.floor(n / 1000)
+        suffix = "k"
+    end
+    return "x" .. tostring(n) .. suffix
+end
+
 function ClientUI:fetchItems()
     --print("started fetch")
     local itemsByName = self:serverCall("scanItemsCraftable",{})
@@ -211,14 +223,8 @@ function ClientUI:fetchItems()
     -- TODO: Do based on name or displayName?
     table.sort(self.items, function(a, b) return a.displayName:lower() < b.displayName:lower() end)
     for k,v in pairs(self.items) do
-        local count = "x" .. tostring(v.count)
+        local count = formatCount(v.count)
         local line = padToWidth(v.displayName,self.list.size[1]-#count)
-        --if count >= 1000 then
-        --    count = floor(count / 1000)
-        --    line = line .. "x" .. count .. "k"
-        --else
-        --    line = line .. "x" .. count
-        --end
         table.insert(self.list.items,line .. count)
     end
     --print("finished fetch")
