@@ -145,7 +145,7 @@ function ClientUI:init(serverID)
             self.field.dirty = true
         end
     end
-    
+    self:onLayout()
     self:fetchItems()
 end
 
