@@ -1,11 +1,18 @@
 local Common = require 'inv_common'
-local gui = require 'gui'
+
+local Button = require 'gui.Button'
+local Constants = require 'gui.Constants'
+local LinearContainer = require 'gui.LinearContainer'
+local ListBox = require 'gui.ListBox'
+local Root = require 'gui.Root'
+local ScrollBar = require 'gui.ScrollBar'
+local TextField = require 'gui.TextField'
 
 --print(textutils.serialize(serverCall(0,"pullOrCraftItemsExt",{"minecraft:stick",10,"turtle_1",1})))
 
 local config_path = "client.json"
 
-local ClientUI = gui.Root:subclass()
+local ClientUI = Root:subclass()
 
 function ClientUI:init(serverID)
     ClientUI.superClass.init(self)
@@ -18,54 +25,54 @@ function ClientUI:init(serverID)
     self.items = {}
     self.modPressed = false
     
-    self.vbox = gui.LinearContainer:new(self,2,1,1)
-    self.hbox = gui.LinearContainer:new(self,1,0,0)
+    self.vbox = LinearContainer(self,2,1,1)
+    self.hbox = LinearContainer(self,1,0,0)
     
-    self.list = gui.ListBox:new(self,10,10,{})
-    self.sb = gui.ScrollBar:new(self,self.list)
+    self.list = ListBox(self,10,10,{})
+    self.sb = ScrollBar(self,self.list)
 
-    self.btnRefresh = gui.Button:new(self,"Refresh")
-    self.lbl = gui.Label:new(self,"[Nothing]")
+    self.btnRefresh = Button(self,"Refresh")
+    self.lbl = Label(self,"[Nothing]")
     self.lbl.length = self.sidebarWidth
-    self.lbl2 = gui.Label:new(self,"Count: 0")
+    self.lbl2 = Label(self,"Count: 0")
     self.lbl2.length = self.sidebarWidth
 
     self:addChild(self.hbox)
     
-    self.hbox:addChild(self.list,true,true,gui.LinearAlign.START)
-    self.hbox:addChild(self.sb,false,true,gui.LinearAlign.START)
-    self.hbox:addChild(self.vbox,false,true,gui.LinearAlign.START)
+    self.hbox:addChild(self.list,true,true,Constants.LinearAlign.START)
+    self.hbox:addChild(self.sb,false,true,Constants.LinearAlign.START)
+    self.hbox:addChild(self.vbox,false,true,Constants.LinearAlign.START)
     
-    self.vbox:addChild(self.btnRefresh,false,true,gui.LinearAlign.START)
-    self.vbox:addChild(self.lbl,false,true,gui.LinearAlign.START)
-    self.vbox:addChild(self.lbl2,false,true,gui.LinearAlign.START)
+    self.vbox:addChild(self.btnRefresh,false,true,Constants.LinearAlign.START)
+    self.vbox:addChild(self.lbl,false,true,Constants.LinearAlign.START)
+    self.vbox:addChild(self.lbl2,false,true,Constants.LinearAlign.START)
     
     if turtle then
-        self.spinBox = gui.LinearContainer:new(self,1,1,0)
-        self.btnBox = gui.LinearContainer:new(self,1,1,0)
+        self.spinBox = LinearContainer(self,1,1,0)
+        self.btnBox = LinearContainer(self,1,1,0)
         
-        self.field = gui.TextField:new(self,4,"1")
-        self.btnReq = gui.Button:new(self,"Request")
+        self.field = TextField(self,4,"1")
+        self.btnReq = Button(self,"Request")
     
-        self.btnPrevSlot = gui.Button:new(self,"")
-        self.btnNextSlot = gui.Button:new(self,"")
-        self.btnStore = gui.Button:new(self,"")
-        self.btnPlus = gui.Button:new(self,"+")
-        self.btnMinus = gui.Button:new(self,"-")
+        self.btnPrevSlot = Button(self,"")
+        self.btnNextSlot = Button(self,"")
+        self.btnStore = Button(self,"")
+        self.btnPlus = Button(self,"+")
+        self.btnMinus = Button(self,"-")
         
         self:setModifier(false)
         
-        self.btnBox:addChild(self.btnPrevSlot,false,false,gui.LinearAlign.START)
-        self.btnBox:addChild(self.btnStore,true,false,gui.LinearAlign.START)
-        self.btnBox:addChild(self.btnNextSlot,false,false,gui.LinearAlign.START)
+        self.btnBox:addChild(self.btnPrevSlot,false,false,Constants.LinearAlign.START)
+        self.btnBox:addChild(self.btnStore,true,false,Constants.LinearAlign.START)
+        self.btnBox:addChild(self.btnNextSlot,false,false,Constants.LinearAlign.START)
         
-        self.spinBox:addChild(self.btnMinus,false,false,gui.LinearAlign.START)
-        self.spinBox:addChild(self.field,true,false,gui.LinearAlign.START)
-        self.spinBox:addChild(self.btnPlus,false,false,gui.LinearAlign.START)
+        self.spinBox:addChild(self.btnMinus,false,false,Constants.LinearAlign.START)
+        self.spinBox:addChild(self.field,true,false,Constants.LinearAlign.START)
+        self.spinBox:addChild(self.btnPlus,false,false,Constants.LinearAlign.START)
         
-        self.vbox:addChild(self.spinBox,false,true,gui.LinearAlign.START)
-        self.vbox:addChild(self.btnReq,false,true,gui.LinearAlign.START)
-        self.vbox:addChild(self.btnBox,false,true,gui.LinearAlign.START)
+        self.vbox:addChild(self.spinBox,false,true,Constants.LinearAlign.START)
+        self.vbox:addChild(self.btnReq,false,true,Constants.LinearAlign.START)
+        self.vbox:addChild(self.btnBox,false,true,Constants.LinearAlign.START)
     end
     
     function self.list.onSelectionChanged(list)
@@ -215,7 +222,7 @@ end
 local function main()
     local config = Common.loadJSON(config_path)
     rednet.open(Common.getModemSide())
-    local root = ClientUI:new(config.serverID)
+    local root = ClientUI(config.serverID)
     root:mainLoop()
     rednet.close(Common.getModemSide())
 end
