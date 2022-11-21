@@ -1,4 +1,4 @@
-local Common = require 'inv_common'
+local Common = require 'Common'
 
 local expect = require "cc.expect"
 local expect, field = expect.expect, expect.field
