@@ -12,26 +12,6 @@ function InvManager:init(server)
     self.storage = {}
 end
 
-function InvManager:scanInventory(device)    
-    local items = device:list()
-    for slot, item in pairs(items) do
-        self:updateDB(device, slot)
-        items[item.name].count = items[item.name].count + item.count
-    end
-end
-
-function InvManager:updateDB(device, slot)
-    local detail = device:getItemDetail(slot)
-    local info = self.items[detail.name]
-    if not info then
-        info = Item(detail.name, item)
-        self.items[detail.name] = info
-    end
-    if not info.detailed then
-        info:setDetails(detail)
-    end
-end
-
 function InvManager:sortDevices()
     table.sort(
         self.storage,
@@ -52,6 +32,26 @@ function InvManager:scanItems()
     return items
 end
 
+function InvManager:scanInventory(device)    
+    local items = device:list()
+    for slot, item in pairs(items) do
+        self:updateDB(device, slot)
+        items[item.name].count = items[item.name].count + item.count
+    end
+end
+
+function InvManager:updateDB(device, slot)
+    local detail = device:getItemDetail(slot)
+    local info = self.items[detail.name]
+    if not info then
+        info = Item(detail.name, item)
+        self.items[detail.name] = info
+    end
+    if not info.detailed then
+        info:setDetails(detail)
+    end
+end
+
 -- Attempts to push a given amount of items out from the system
 -- destSlot is optional
 function InvManager:pushItemsTo(searchItem, destDevice, destSlot)
@@ -68,7 +68,7 @@ function InvManager:pushItemsTo(searchItem, destDevice, destSlot)
             elseif searchItem.tags then
                 local details = device:getItemDetail(slot)
                 for tag,v in pairs(searchItem.tags) do
-                    if searchItem.tags[tag] then
+                    if details.tags[tag] then
                         tryMove = true
                         break
                     end
@@ -77,7 +77,7 @@ function InvManager:pushItemsTo(searchItem, destDevice, destSlot)
 
             if tryMove then
                 local toMove = math.min(item.count, count - moved)
-                local n = device:pushItems(dest, slot, toMove, destSlot)
+                local n = device:pushItems(destDevice, slot, toMove, destSlot)
                 moved = moved + n
 
                 local info = self.items[deviceItem.name]
