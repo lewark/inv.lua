@@ -6,8 +6,7 @@ local Machine = Device:subclass()
 function Machine:init(system, name, deviceType)
     Machine.superClass.init(self, system, name, deviceType)
     self.recipe = {}
-    self.inSlots = self.config.inSlots
-    self.outSlots = self.config.outSlots
+    self.slots = self.config.slots
     self.busy = false
     self.remainingOutput = {}
     table.insert(system.craftManager.machines, self)
@@ -17,12 +16,19 @@ function Machine:destroy()
     Common.removeItem(system.craftManager.machines, self)
 end
 
+function Machine:mapSlot(virtSlot)
+    if self.slots then
+        return self.slots[virtSlot]
+    end
+    return virtSlot
+end
+
 function Machine:craft(recipe)
     if self.busy() then error("Machine " .. self.name .. " busy") end
     self.recipe = recipe
     self.remainingOutput = Common.deepCopy(self.recipe.output)
     for virtSlot, item in pairs(self.recipe.input)
-        self.system.invManager.pushItemsTo(item, self, self.inSlots[virtSlot])
+        self.system.invManager.pushItemsTo(item, self, self:mapSlot(virtSlot))
     end
 end
 
@@ -52,7 +58,8 @@ end
 
 function Machine:pullOutput()
     local items = interface.list()
-    for virtSlot, realSlot in pairs(self.outSlots) do
+    for virtSlot, rem in pairs(self.remainingOutput) do
+        local realSlot = self:mapSlot(virtSlot)
         local item = items[realSlot]
         self:handleOutputSlot(item, virtSlot, realSlot)
     end
