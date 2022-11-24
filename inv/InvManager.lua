@@ -13,7 +13,7 @@ function InvManager:init(server)
 end
 
 function InvManager:scanInventory(device)    
-    local items = device.list()
+    local items = device:list()
     for slot, item in pairs(items) do
         self:updateDB(device, slot)
         items[item.name].count = items[item.name].count + item.count
@@ -21,17 +21,24 @@ function InvManager:scanInventory(device)
 end
 
 function InvManager:updateDB(device, slot)
-    local item = device.getItemDetail(slot)
-    if not self.items[item.name] then
-        self.items[item.name] = Item(item.name, item)
+    local detail = device:getItemDetail(slot)
+    local info = self.items[detail.name]
+    if not info then
+        info = Item(detail.name, item)
+        self.items[detail.name] = info
     end
-    if not self.items[item.name].detailed then
-        self.items[item.name].setDetails(item)
+    if not info.detailed then
+        info:setDetails(detail)
     end
 end
 
 function InvManager:sortDevices()
-    table.sort(self.storage, function(a,b) return (a.name < b.name) and not (a.priority < b.priority) end)
+    table.sort(
+        self.storage,
+        function (a,b)
+            return (a.name < b.name) and not (a.priority < b.priority)
+        end
+    )
 end
 
 -- Returns a list of all items stored in the system
@@ -47,27 +54,35 @@ end
 
 -- Attempts to push a given amount of items out from the system
 -- destSlot is optional
-function InvManager:pushItemsTo(searchItem,dest,destSlot)
+function InvManager:pushItemsTo(searchItem, destDevice, destSlot)
     local count = 1
     if item.count ~= nil then
         count = item.count
     end
     for i, device in ipairs(self.storage) do
-        local items = device.list()
+        local items = device:list()
         for slot, deviceItem in pairs(items) do
             local tryMove = false
             if searchItem.name and deviceItem.name == searchItem.name then
                 tryMove = true
             elseif searchItem.tags then
-                local details = device.getItemDetail(slot)
+                local details = device:getItemDetail(slot)
                 for tag,v in pairs(searchItem.tags) do
+                    if searchItem.tags[tag] then
+                        tryMove = true
+                        break
+                    end
                 end
             end
 
             if tryMove then
                 local toMove = math.min(item.count, count - moved)
-                local n = device.pushItems(dest, slot, toMove, destSlot)
+                local n = device:pushItems(dest, slot, toMove, destSlot)
                 moved = moved + n
+
+                local info = self.items[deviceItem.name]
+                info.count = info.count - n
+
                 if moved >= count then
                     return moved
                 end
@@ -78,18 +93,27 @@ function InvManager:pushItemsTo(searchItem,dest,destSlot)
 end
 
 -- Attempts to pull a given amount of items into the system
-function InvManager:pullItemsFrom(src, srcSlot, count)
+function InvManager:pullItemsFrom(srcDevice, srcSlot, count)
     local moved = 0
     self:updateDB(src, srcSlot)
     
+    local detail = srcDevice:getItemDetail(slot)
+    if count == nil then
+        count = detail.count
+    end
+    
     for i, device in ipairs(self.storage) do
         local toMove = count - moved
-        local n = device.pullItems(src, srcSlot, toMove)
-        moved = moved + n
-        if count - moved <= 0 then
-            return moved
+        if device:itemAllowed(detail) then
+            local n = device:pullItems(srcDevice, srcSlot, toMove)
+            moved = moved + n
+            if moved >= count then
+                break
+            end
         end
     end
+    local info = self.items[detail.name]
+    info.count = info.count + moved
     return moved
 end
 

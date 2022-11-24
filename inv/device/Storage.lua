@@ -35,12 +35,12 @@ function Storage:list()
     return self.interface.list()
 end
 
-function Storage:pushItems(toName, fromSlot, limit, toSlot)
-    return self.interface.pushItems(toName, fromSlot, limit, toSlot)
+function Storage:pushItems(toDevice, fromSlot, limit, toSlot)
+    return self.interface.pushItems(toDevice.name, fromSlot, limit, toSlot)
 end
 
-function Storage:pullItems(fromName, fromSlot, limit, toSlot)
-    return self.interface.pullItems(fromName, fromSlot, limit, toSlot)
+function Storage:pullItems(fromDevice, fromSlot, limit, toSlot)
+    return self.interface.pullItems(fromDevice.name, fromSlot, limit, toSlot)
 end
 
 return Storage

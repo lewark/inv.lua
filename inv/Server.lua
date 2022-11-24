@@ -40,6 +40,12 @@ function Server:main()
             else
                 --print("Unknown command "..msg[1])
             end
+        elseif evt[1] == "peripheral" then
+            self.deviceManager:addDevice(evt[2])
+            self.invManager:scanItems()
+        elseif evt[1] == "peripheral_detach" then
+            self.deviceManager:removeDevice(evt[2])
+            self.invManager:scanItems()
         elseif evt[1] == "terminate" then
             return
         end

@@ -28,7 +28,7 @@ function Machine:craft(recipe)
     self.recipe = recipe
     self.remainingOutput = Common.deepCopy(self.recipe.output)
     for virtSlot, item in pairs(self.recipe.input)
-        self.server.invManager.pushItemsTo(item, self.name, self:mapSlot(virtSlot))
+        self.server.invManager.pushItemsTo(item, self, self:mapSlot(virtSlot))
     end
 end
 
@@ -45,7 +45,7 @@ function Machine:handleOutputSlot(item, virtSlot, realSlot)
     if item then
         local rem = self.remainingOutput[virtSlot]
         if rem and rem.name == item.name and rem.count >= item.count then
-            n = self.server.invManager.pullItemsFrom(self.name, realSlot)
+            n = self.server.invManager.pullItemsFrom(self, realSlot)
             rem.count = rem.count - n
             if rem.count == 0 then
                 self.remainingOutput[virtSlot] = nil
