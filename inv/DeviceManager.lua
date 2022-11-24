@@ -2,7 +2,7 @@ local Object = require 'object.Object'
 
 local Storage = require 'inv.device.Storage'
 local Workbench = require 'inv.device.Workbench'
-local Machine = requrie 'inv.device.Machine'
+local Machine = require 'inv.device.Machine'
 
 local DeviceManager = Object:subclass()
 
@@ -49,11 +49,11 @@ function DeviceManager:createDevice(name)
         end
     end
 
-    local config = self.server.getConfig(name, deviceType)
+    local config = self:getConfig(name, deviceType)
     if config.purpose == "crafting" then
-        return Machine(self.server, name, deviceType)
+        return Machine(self.server, name, deviceType, config)
     elseif config.purpose == "storage" or genericTypes["inventory"] then
-        return Storage(self.server, name, deviceType)
+        return Storage(self.server, name, deviceType, config)
     end
     return nil
 end

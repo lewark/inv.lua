@@ -3,8 +3,8 @@ local Common = require 'inv.Common'
 
 local Machine = Device:subclass()
 
-function Machine:init(server, name, deviceType)
-    Machine.superClass.init(self, server, name, deviceType)
+function Machine:init(server, name, deviceType, config)
+    Machine.superClass.init(self, server, name, deviceType, config)
     self.recipe = {}
     self.slots = self.config.slots
     self.busy = false

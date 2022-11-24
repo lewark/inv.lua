@@ -3,8 +3,8 @@ local Common = require 'inv.Common'
 
 local Storage = Device:subclass()
 
-function Storage:init(server, name, deviceType)
-    Storage.superClass.init(self, server, name, deviceType)
+function Storage:init(server, name, deviceType, config)
+    Storage.superClass.init(self, server, name, deviceType, config)
     self.priority = self.config.priority or 0
     self.filter = self.config.filter
     table.insert(self.server.invManager.storage, self)
