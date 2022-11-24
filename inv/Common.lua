@@ -48,4 +48,13 @@ function Common.loadJSON(path)
     return config
 end
 
+function Common.removeItem(t, item)
+    for i=1,#t do
+        if t[i] == item then
+            table.remove(t, i)
+            return
+        end
+    end
+end
+
 return Common

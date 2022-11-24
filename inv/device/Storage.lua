@@ -1,11 +1,17 @@
-local Device = require 'inv.Device'
+local Device = require 'inv.device.Device'
+local Common = require 'inv.Common'
 
 local Storage = Device:subclass()
 
-function Storage:init(system, name)
-    Storage.superClass.init(self, system, name)
+function Storage:init(system, name, deviceType)
+    Storage.superClass.init(self, system, name, deviceType)
     self.priority = self.config.priority or 0
     self.filter = self.config.filter
+    table.insert(self.system.invManager.storage, self)
+end
+
+function Storage:destroy()
+    Common.removeItem(self.system.invManager.storage, self)
 end
 
 function Storage:itemAllowed(item)
