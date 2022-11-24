@@ -20,13 +20,15 @@ function TextArea:init(root,cols,rows,text)
     expect(4, text, "string")
     TextArea.superClass.init(self,root)
 
+    self.text = {}
     self:setText(text)
     self.color = colors.white
     self.textColor = colors.black
     self.rows = rows
     self.cols = cols
     self.cursorScreenPos = {0,0}
-    self.charX,self.charY = #self.text,1
+    self.charX = #self.text
+    self.charY = 1
 end
 
 function TextArea:getPreferredSize()

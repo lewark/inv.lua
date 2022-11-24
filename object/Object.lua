@@ -5,7 +5,10 @@ local expect = require "cc.expect"
 local function new(self, ...)
     local instance = setmetatable({},{__index=self})
     instance.class = self
-    instance:init(...)
+    ret, msg = pcall(instance.init, instance, ...)
+    if not ret then
+        error(msg, 2) -- propagate error up to caller
+    end
     return instance
 end
 

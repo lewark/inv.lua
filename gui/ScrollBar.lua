@@ -17,6 +17,7 @@ function ScrollBar:init(root,scrollWidget)
     ScrollBar.superClass.init(self,root)
     self.scrollWidget = scrollWidget
     scrollWidget.scrollbar = self
+    self.drag = 0
     self.dragOffset = 0
     self.grab = 0
     self.barColor = colors.blue

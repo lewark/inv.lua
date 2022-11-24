@@ -1,5 +1,5 @@
 local expect = require "cc.expect"
-local Object = require "gui.Object"
+local Object = require "object.Object"
 
 -- Base class for GUI elements.
 local Widget = Object:subclass()
@@ -71,7 +71,7 @@ function Widget:onFocus(focused) return true end
 
 -- Handles any input events recieved by the widget and passes them to
 -- the appropriate handler functions. Return true from an event handler
--- to consume the event and prevent it from being passed on to other gui.
+-- to consume the event and prevent it from being passed on to other widgets.
 -- Event consumption is mainly useful for mouse_click and mouse_scroll.
 function Widget:onEvent(evt)
     expect(1, evt, "table")

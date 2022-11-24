@@ -14,7 +14,7 @@ local LinearContainer = Container:subclass()
 -- Parameters:
 -- - root (Root): The root widget
 -- - axis (LinearAxis): The primary axis of this container (HORIZONAL or VERTICAL).
--- - spacing (int): Spacing between contained gui.
+-- - spacing (int): Spacing between contained widgets.
 -- - padding (int): Padding between the first/last widgets and the container's edge.
 function LinearContainer:init(root,axis,spacing,padding)
     expect(1, root, "table")
