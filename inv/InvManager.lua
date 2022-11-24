@@ -14,6 +14,7 @@ local InvManager = Object:subclass()
 function InvManager:init(server)
     self.server = server
     self.items = {}
+    self.tags = {}
     self.storage = {}
     self.sorted = false
 end

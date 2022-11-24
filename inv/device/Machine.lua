@@ -7,7 +7,6 @@ function Machine:init(server, name, deviceType, config)
     Machine.superClass.init(self, server, name, deviceType, config)
     self.recipe = {}
     self.slots = self.config.slots
-    self.busy = false
     self.remainingOutput = {}
 
     self.server.craftManager:addMachine(self)
@@ -25,7 +24,7 @@ function Machine:mapSlot(virtSlot)
 end
 
 function Machine:craft(recipe)
-    if self.busy() then error("Machine " .. self.name .. " busy") end
+    if self:busy() then error("Machine " .. self.name .. " busy") end
     self.recipe = recipe
     self.remainingOutput = Common.deepCopy(self.recipe.output)
     for virtSlot, item in pairs(self.recipe.input)
@@ -34,12 +33,7 @@ function Machine:craft(recipe)
 end
 
 function Machine:busy()
-    for virtSlot, rem in pairs(self.remainingOutput) do
-        if rem and rem.count > 0 then
-            return true
-        end
-    end
-    return false
+    return self.recipe ~= nil
 end
 
 function Machine:handleOutputSlot(item, virtSlot, realSlot)
@@ -48,9 +42,9 @@ function Machine:handleOutputSlot(item, virtSlot, realSlot)
         if rem and rem.name == item.name and rem.count >= item.count then
             n = self.server.invManager.pullItemsFrom(self, realSlot)
             rem.count = rem.count - n
-            if rem.count == 0 then
-                self.remainingOutput[virtSlot] = nil
-            end
+            --if rem.count == 0 then
+            --    self.remainingOutput[virtSlot] = nil
+            --end
         else
             error("unexpected output " .. item.name .. " in " .. self.name)
         end
@@ -62,6 +56,15 @@ function Machine:pullOutput()
         local realSlot = self:mapSlot(virtSlot)
         local item = self:getItemDetail(realSlot)
         self:handleOutputSlot(item, virtSlot, realSlot)
+    end
+    local done = true
+    for virtSlot, rem in pairs(self.remainingOutput) do
+        if rem and rem.count > 0 then
+            done = false
+        end
+    end
+    if done then
+        self.recipe = nil
     end
 end
 

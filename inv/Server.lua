@@ -11,7 +11,8 @@ function Server:init()
 
     self.deviceManager = DeviceManager(self, config.overrides)
     self.invManager = InvManager(self)
-    --self.craftManager = CraftManager(self)
+    self.craftManager = CraftManager(self)
+    self.taskManager = TaskManager(self)
 
     self.deviceManager:scanDevices()
 end

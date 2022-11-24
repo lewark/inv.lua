@@ -9,10 +9,10 @@ local ItemInfo = Object:subclass()
 function ItemInfo:init(name)
     self.name = name
     self.count = 0
-    
+
     self.displayName = nil
     self.maxCount = nil
-    self.tags = nil
+    self.tags = {}
     self.detailed = false
 end
 
