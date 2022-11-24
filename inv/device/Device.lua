@@ -2,8 +2,8 @@ local Object = require 'object.Object'
 
 local Device = Object:subclass()
 
-function Device:init(system, name, deviceType)
-    self.system = system
+function Device:init(server, name, deviceType)
+    self.server = server
     self.name = name
     self.interface = nil
     self.types = {}
@@ -11,7 +11,7 @@ function Device:init(system, name, deviceType)
     self.config = {}
     if self.name then
         self.interface = peripheral.wrap(self.name)
-        self.config = self.system.getConfig(self.name, self.type)
+        self.config = self.server.deviceManager.getConfig(self)
     end
 end
 

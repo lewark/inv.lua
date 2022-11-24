@@ -5,8 +5,8 @@ local Object = require 'object.Object'
 
 local InvManager = Object:subclass()
 
-function InvManager:init(system)
-    self.system = {}
+function InvManager:init(server)
+    self.server = server
     self.itemDB = {}
 end
 
@@ -59,15 +59,6 @@ function InvManager:updateDB(inv,slot,item)
         --print("made entry for "..item.name)
         self.itemDB[item.name] = self:detailsCreate(details)
     end
-end
-
-function InvManager:getPriority(inv)
-    if self.name_overrides[inv.name] and self.name_overrides[inv.name].priority then
-        return self.name_overrides[inv.name].priority
-    elseif self.type_overrides[inv.type] and self.type_overrides[inv.type].priority then
-        return self.type_overrides[inv.type].priority
-    end
-    return 0
 end
 
 function InvManager:getInventories()

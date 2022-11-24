@@ -1,8 +1,17 @@
+local Object = require 'object.Object'
 local InvManager = require 'inv.InvManager'
 local Common = require 'inv.Common'
 local CraftManager = require 'inv.CraftManager'
 
-local function main()
+local Server = Object:subclass()
+
+function Server:init()
+    self.deviceManager = DeviceManager(self)
+    self.invManager = InvManager(self)
+    self.craftManager = CraftManager(self)
+end
+
+function Server:main()
     local config = Common.loadJSON("server.json")
     local recipes = Common.loadJSON("recipes/minecraft.json")
 
@@ -39,4 +48,4 @@ local function main()
     rednet.close(Common.getModemSide())
 end
 
-main()
+return Server
