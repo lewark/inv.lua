@@ -5,20 +5,9 @@ local Object = require 'object.Object'
 
 local InvManager = Object:subclass()
 
-function InvManager:init(overrides)
+function InvManager:init(system)
+    self.system = {}
     self.itemDB = {}
-    self.type_overrides = {}
-    self.name_overrides = {}
-    
-    for _,v in pairs(overrides) do
-        if v.type then
-            mgr.type_overrides[v.type] = v
-        elseif v.name then
-            mgr.name_overrides[v.name] = v
-        end
-    end
-
-    return setmetatable(mgr,{__index=self})
 end
 
 function InvManager:itemCreate(name,count)

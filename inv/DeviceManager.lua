@@ -6,9 +6,20 @@ local Machine = requrie 'inv.device.Machine'
 
 local DeviceManager = Object:subclass()
 
-function DeviceManager:init(system)
+function DeviceManager:init(system, overrides)
     self.system = system
     self.devices = {}
+
+    self.type_overrides = {}
+    self.name_overrides = {}
+
+    for _,v in pairs(overrides) do
+        if v.type then
+            mgr.type_overrides[v.type] = v
+        elseif v.name then
+            mgr.name_overrides[v.name] = v
+        end
+    end
 end
 
 function createDevice(name)
