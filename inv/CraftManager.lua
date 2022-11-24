@@ -1,12 +1,15 @@
+local Object = require 'object.Object'
 local Common = require 'inv.Common'
 
 local expect = require "cc.expect"
 local expect, field = expect.expect, expect.field
 
-local CraftManager = { }
+local CraftManager = Object:subclass()
 
-function CraftManager:new(invMgr,recipes)
-    return setmetatable({itemDB={},invMgr=invMgr,recipes=recipes,localName=Common.getNameLocal()},{__index=self})
+function CraftManager:init(invMgr,recipes)
+    self.invMgr = invMgr
+    self.recipes = recipes
+    self.localName = Common.getNameLocal()
 end
 
 function CraftManager:itemMatches(item,criteria)

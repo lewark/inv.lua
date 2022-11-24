@@ -1,10 +1,14 @@
+local Object = require 'object.Object'
+
 -- TODO: Maybe implement caching of item locations to speed up operations
 --  on large storage networks?
 
-local InvManager = {}
+local InvManager = Object:subclass()
 
-function InvManager:new(overrides)
-    mgr = {itemDB={},type_overrides={},name_overrides={}}
+function InvManager:init(overrides)
+    self.itemDB = {}
+    self.type_overrides = {}
+    self.name_overrides = {}
     
     for _,v in pairs(overrides) do
         if v.type then
