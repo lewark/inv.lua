@@ -51,6 +51,11 @@ function DeviceManager:getConfig(device)
 end
 
 function DeviceManager:createDevice(name)
+    if name == common.getNameLocal() then
+        print("self found in adjacent")
+        return nil
+    end
+
     local types = peripheral.getType(name)
     local deviceType = nil
     local genericTypes = {}
@@ -63,7 +68,7 @@ function DeviceManager:createDevice(name)
         end
     end
 
-    if deviceType == "turtle" and name != common.getNameLocal() then
+    if deviceType == "turtle" then
         return ClientDevice(self.server, name, deviceType)
     end
 
@@ -79,13 +84,18 @@ function DeviceManager:createDevice(name)
 end
 
 function DeviceManager:addDevice(name)
+    if self.devices[name] then
+        self.devices[name].destroy()
+    end
     self.devices[name] = self:createDevice(name)
 end
 
 function DeviceManager:removeDevice(name)
     local device = self.devices[name]
-    self.devices[name] = nil
-    device.destroy()
+    if device then
+        self.devices[name] = nil
+        device.destroy()
+    end
 end
 
 return DeviceManager
