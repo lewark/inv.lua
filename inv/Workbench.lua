@@ -1,4 +1,4 @@
-local Machine = require 'Machine'
+local Machine = require 'inv.Machine'
 
 local Workbench = Machine:subclass()
 

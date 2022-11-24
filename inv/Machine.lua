@@ -1,4 +1,4 @@
-local Device = require 'Device'
+local Device = require 'inv.Device'
 
 local Machine = Device:subclass()
 

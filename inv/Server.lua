@@ -1,6 +1,6 @@
-local InvManager = require 'InvManager'
-local Common = require 'Common'
-local CraftManager = require 'CraftManager'
+local InvManager = require 'inv.InvManager'
+local Common = require 'inv.Common'
+local CraftManager = require 'inv.CraftManager'
 
 local function main()
     local config = Common.loadJSON("server.json")

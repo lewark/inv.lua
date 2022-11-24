@@ -1,4 +1,4 @@
-local Common = require 'Common'
+local Common = require 'inv.Common'
 
 local Button = require 'gui.Button'
 local Constants = require 'gui.Constants'
