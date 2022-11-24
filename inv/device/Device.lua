@@ -14,6 +14,10 @@ function Device:init(server, name, deviceType, config)
     end
 end
 
+function Device:getItemDetail(slot)
+    return self.interface.getItemDetail(slot)
+end
+
 function Device:destroy() end
 
 return Device

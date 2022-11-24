@@ -22,12 +22,8 @@ function Workbench:craft()
     self:pullOutput()
 end
 
-function Workbench:pullOutput()
-    for virtSlot, rem in pairs(self.remainingOutput) do
-        local realSlot = self:mapSlot(virtSlot)
-        local item = turtle.getItemDetail(realSlot)
-        self:handleOutputSlot(item, virtSlot, realSlot)
-    end
+function Workbench:getItemDetail(slot)
+    return turtle.getItemDetail(slot, true)
 end
 
 return Workbench

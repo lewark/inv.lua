@@ -1,4 +1,4 @@
-local Task = require 'inv.Task'
+local Task = require 'inv.task.Task'
 
 local FetchTask = Task:subclass()
 

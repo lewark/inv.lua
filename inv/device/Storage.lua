@@ -22,13 +22,25 @@ function Storage:itemAllowed(item)
         return true
     end
     if self.filter.tag and item.tags then
-        for k,tag in pairs(item.tags) do
-            if self.filter.tag[tag] then
+        for tag, v in pairs(self.filter.tags) do
+            if item.tags[tag] and v then
                 return true
             end
         end
     end
     return false
+end
+
+function Storage:list()
+    return self.interface.list()
+end
+
+function Storage:pushItems(toName, fromSlot, limit, toSlot)
+    return self.interface.pushItems(toName, fromSlot, limit, toSlot)
+end
+
+function Storage:pullItems(fromName, fromSlot, limit, toSlot)
+    return self.interface.pullItems(fromName, fromSlot, limit, toSlot)
 end
 
 return Storage

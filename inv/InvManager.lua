@@ -1,4 +1,5 @@
 local Object = require 'object.Object'
+local ItemInfo = require 'inv.ItemInfo'
 
 -- TODO: Maybe implement caching of item locations to speed up operations
 --  on large storage networks?
@@ -7,94 +8,67 @@ local InvManager = Object:subclass()
 
 function InvManager:init(server)
     self.server = server
-    self.itemDB = {}
+    self.items = {}
+    self.storage = {}
 end
 
-function InvManager:itemCreate(name,count)
-    local i = {
-        name=name,
-        count=count,
-        displayName=name
-    }
-    print("scanning "..name)
-    for k,v in pairs(self.itemDB) do
-        print(k .. v.displayName)
-    end
-    if self.itemDB[name] then
-        i.displayName = self.itemDB[name].displayName
-        print("found")
-    else
-        print("not found")
-    end
-    return i
-end
-
--- Assumptions made here:
--- Items of an ID always have the same name, tags, and maximum count
--- This is not true for display names! (See CC computers)
--- TODO: Do this better
-function InvManager:detailsCreate(details)
-    local d = {
-        displayName=details.displayName,
-        maxCount=details.maxCount,
-        tags=(details.tags or {})
-    }
-    return d
-end
-
-function InvManager:scanInventory(invName, inv, items)    
-    local inv_items = inv.list()
-    for slot,item in pairs(inv_items) do
-        self:updateDB(inv,slot,item)
-        if not items[item.name] then
-            items[item.name] = self:itemCreate(item.name,0)
-        end
+function InvManager:scanInventory(device)    
+    local items = device.list()
+    for slot, item in pairs(items) do
+        self:updateDB(device, slot)
         items[item.name].count = items[item.name].count + item.count
     end
 end
 
-function InvManager:updateDB(inv,slot,item)
-    if not self.itemDB[item.name] then
-        local details = inv.getItemDetail(slot)
-        --print("made entry for "..item.name)
-        self.itemDB[item.name] = self:detailsCreate(details)
+function InvManager:updateDB(device, slot)
+    local item = device.getItemDetail(slot)
+    if not self.items[item.name] then
+        self.items[item.name] = Item(item.name, item)
+    end
+    if not self.items[item.name].detailed then
+        self.items[item.name].setDetails(item)
     end
 end
 
-function InvManager:getInventories()
-    local invs = {}
-    for i,name in pairs(peripheral.getNames()) do
-        local inv = peripheral.wrap(name)
-        if inv.list then
-            table.insert(invs,{name=name,inv=inv,type=peripheral.getType(name)})
-        end
-    end
-    table.sort(invs, function(a,b) return (a.name < b.name) and not (self:getPriority(a) < self:getPriority(b)) end)
-    return invs
+function InvManager:sortDevices()
+    table.sort(self.storage, function(a,b) return (a.name < b.name) and not (a.priority < b.priority) end)
 end
 
 -- Returns a list of all items stored in the system
 function InvManager:scanItems()
-    items = {}
-    for i,inventory in ipairs(self:getInventories()) do
-        self:scanInventory(inventory.name,inventory.inv,items)
+    for k, v in pairs(self.items) do
+        v.count = 0
+    end
+    for i, device in ipairs(self.storage) do
+        self:scanInventory(device)
     end
     return items
 end
 
--- Attempts to pull a given amount of items from the system
+-- Attempts to push a given amount of items out from the system
 -- destSlot is optional
-function InvManager:pullItemsExt(name,count,dest,destSlot)
-    local moved = 0
-    for i,inventory in ipairs(self:getInventories()) do
-        local inv = inventory.inv
-        local items = inv.list()
-        for slot,item in pairs(items) do
-            if item.name == name then
-                local toMove = math.min(item.count,count - moved)
-                local n = inv.pushItems(dest, slot, toMove, destSlot)
+function InvManager:pushItemsTo(searchItem,dest,destSlot)
+    local count = 1
+    if item.count ~= nil then
+        count = item.count
+    end
+    for i, device in ipairs(self.storage) do
+        local items = device.list()
+        for slot, deviceItem in pairs(items) do
+            local tryMove = false
+            if searchItem.name and deviceItem.name == searchItem.name then
+                tryMove = true
+            elseif searchItem.tags then
+                local details = device.getItemDetail(slot)
+                for tag,v in pairs(searchItem.tags) do
+                end
+            end
+
+            if tryMove then
+                local toMove = math.min(item.count, count - moved)
+                local n = device.pushItems(dest, slot, toMove, destSlot)
                 moved = moved + n
-                if count - moved <= 0 then
+                if moved >= count then
                     return moved
                 end
             end
@@ -103,66 +77,14 @@ function InvManager:pullItemsExt(name,count,dest,destSlot)
     return moved
 end
 
--- TODO: this is duplicated, might want to use a lambda function or something
-function InvManager:pullItemsByTag(tag,count,dest,destSlot)
+-- Attempts to pull a given amount of items into the system
+function InvManager:pullItemsFrom(src, srcSlot, count)
     local moved = 0
-    for i,inventory in ipairs(self:getInventories()) do
-        local inv = inventory.inv
-        local items = inv.list()
-        for slot,item in pairs(items) do
-            self:updateDB(inv,slot,item)
-            if self.itemDB[item.name].tags[tag] then
-                local toMove = math.min(item.count,count - moved)
-                local n = inv.pushItems(dest, slot, toMove, destSlot)
-                moved = moved + n
-                if count - moved <= 0 then
-                    return moved
-                end
-            end
-        end
-    end
-    return moved
-end
-
---[[
-function InvManager:countItems(name)
-    local count = 0
-    for invName,inv in pairs(self:getInventories()) do
-        local items = inv.list()
-        for slot,item in pairs(items) do
-            if item.name == name then
-                count = count + item.count
-            end
-        end
-    end
-    return count
-end
-
-function InvManager:countItemsByTag(tag)
-    local count = 0
-    for invName,inv in pairs(self:getInventories()) do
-        local items = inv.list()
-        for slot,item in pairs(items) do
-            self:updateDB(inv,slot,item)
-            if self.itemDB[item].tags[tag] then
-                count = count + item.count
-            end
-        end
-    end
-    return count
-end
---]]
-
--- Attempts to push a given amount of items into the system
-function InvManager:pushItemsExt(count,src,srcSlot)
-    local moved = 0
-    --local srcInv = peripheral.wrap(src)
-    --local srcDetail = src.getItemDetail(srcSlot)
+    self:updateDB(src, srcSlot)
     
-    for i,inventory in ipairs(self:getInventories()) do
-        local inv = inventory.inv
+    for i, device in ipairs(self.storage) do
         local toMove = count - moved
-        local n = inv.pullItems(src, srcSlot, toMove)
+        local n = device.pullItems(src, srcSlot, toMove)
         moved = moved + n
         if count - moved <= 0 then
             return moved
