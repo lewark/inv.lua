@@ -1,5 +1,6 @@
 local Object = require 'object.Object'
 
+local Common = require 'inv.Common'
 local Storage = require 'inv.device.Storage'
 local Workbench = require 'inv.device.Workbench'
 local Machine = require 'inv.device.Machine'
@@ -22,6 +23,18 @@ function DeviceManager:init(server, overrides)
     end
 end
 
+function DeviceManager:scanDevices()
+    for name,device in pairs(self.devices) do
+        device.destroy()
+    end
+    self.devices = {}
+
+    self.devices[common.getNameLocal()] = Workbench(self.server)
+    for i,name in ipairs(peripheral.getNames()) do
+        self:createDevice(name)
+    end
+end
+
 function DeviceManager:copyConfig(entries, dest)
     if entries then
         for k,v in pairs(entries) do
@@ -41,6 +54,7 @@ function DeviceManager:createDevice(name)
     local types = peripheral.getType(name)
     local deviceType = nil
     local genericTypes = {}
+
     for k,v in pairs(types) do
         if v == "inventory" or v == "fluid_storage" or v == "energy_storage" then
             genericTypes[v] = true
@@ -49,12 +63,18 @@ function DeviceManager:createDevice(name)
         end
     end
 
+    if deviceType == "turtle" and name != common.getNameLocal() then
+        return ClientDevice(self.server, name, deviceType)
+    end
+
     local config = self:getConfig(name, deviceType)
+
     if config.purpose == "crafting" then
         return Machine(self.server, name, deviceType, config)
     elseif config.purpose == "storage" or genericTypes["inventory"] then
         return Storage(self.server, name, deviceType, config)
     end
+
     return nil
 end
 

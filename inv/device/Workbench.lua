@@ -4,9 +4,7 @@ local Common = require 'inv.Common'
 local Workbench = Machine:subclass()
 
 function Workbench:init(server)
-    Workbench.superClass.init(self, server, nil, {})
-    self.name = Common.getNameLocal()
-    self.type = "inv:workbench"
+    Workbench.superClass.init(self, server, Common.getNameLocal(), "inv:workbench", {})
     self.slots = {
         [1]=1,  [2]=2,  [3]=3,
         [4]=5,  [5]=6,  [6]=7,

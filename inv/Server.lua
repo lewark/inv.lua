@@ -6,19 +6,20 @@ local CraftManager = require 'inv.CraftManager'
 local Server = Object:subclass()
 
 function Server:init()
-    self.deviceManager = DeviceManager(self)
+    local config = Common.loadJSON("server.json")
+    --local recipes = Common.loadJSON("recipes/minecraft.json")
+
+    self.deviceManager = DeviceManager(self, config.overrides)
     self.invManager = InvManager(self)
-    self.craftManager = CraftManager(self)
+    --self.craftManager = CraftManager(self)
+
+    self.deviceManager:scanDevices()
+    self.invManager:scanItems()
 end
 
-function Server:main()
-    local config = Common.loadJSON("server.json")
-    local recipes = Common.loadJSON("recipes/minecraft.json")
+function Server:mainLoop()
 
     --print(textutils.serialize(recipes))
-
-    mgr = InvManager:new(config.overrides or {})
-    cmgr = CraftManager:new(mgr, recipes)
 
     --print(cmgr:pullOrCraftItemsExt("minecraft:wooden_pickaxe",10,"turtle_1",1))
 
