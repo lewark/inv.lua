@@ -83,8 +83,9 @@ function DeviceManager:addDevice(name)
 end
 
 function DeviceManager:removeDevice(name)
-    self.devices[name]:destroy()
+    local device = self.devices[name]
     self.devices[name] = nil
+    device.destroy()
 end
 
 return DeviceManager

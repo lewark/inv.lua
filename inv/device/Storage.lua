@@ -7,11 +7,14 @@ function Storage:init(server, name, deviceType, config)
     Storage.superClass.init(self, server, name, deviceType, config)
     self.priority = self.config.priority or 0
     self.filter = self.config.filter
+
     table.insert(self.server.invManager.storage, self)
+    self.server.invManager.scanInventory(self)
 end
 
 function Storage:destroy()
     Common.removeItem(self.server.invManager.storage, self)
+    self.server.invManager:scanItems()
 end
 
 function Storage:itemAllowed(item)
