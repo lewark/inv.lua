@@ -21,15 +21,13 @@ function InvManager:sortDevices()
     )
 end
 
--- Returns a list of all items stored in the system
-function InvManager:scanItems()
+function InvManager:scanInventories()
     for k, v in pairs(self.items) do
         v.count = 0
     end
     for i, device in ipairs(self.storage) do
         self:scanInventory(device)
     end
-    return items
 end
 
 function InvManager:scanInventory(device)    
