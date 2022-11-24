@@ -4,6 +4,10 @@ local ItemInfo = require 'inv.ItemInfo'
 -- TODO: Maybe implement caching of item locations to speed up operations
 --  on large storage networks?
 
+local function deviceSort()
+    return (a.name < b.name) and not (a.priority < b.priority)
+end
+
 local InvManager = Object:subclass()
 
 function InvManager:init(server)
@@ -13,38 +17,42 @@ function InvManager:init(server)
 end
 
 function InvManager:sortDevices()
-    table.sort(
-        self.storage,
-        function (a,b)
-            return (a.name < b.name) and not (a.priority < b.priority)
-        end
-    )
+    table.sort(self.storage, deviceSort)
 end
 
 function InvManager:scanInventories()
     for k, v in pairs(self.items) do
         v.count = 0
     end
+
     for i, device in ipairs(self.storage) do
         self:scanInventory(device)
     end
 end
 
-function InvManager:scanInventory(device)    
+function InvManager:scanInventory(device)
     local items = device:list()
+
     for slot, item in pairs(items) do
         self:updateDB(device, slot)
         items[item.name].count = items[item.name].count + item.count
     end
 end
 
+function InvManager:addItem(name)
+    local info = Item(name)
+    self.items[name] = info
+    return info
+end
+
 function InvManager:updateDB(device, slot)
     local detail = device:getItemDetail(slot)
     local info = self.items[detail.name]
+
     if not info then
-        info = Item(detail.name, item)
-        self.items[detail.name] = info
+        info = self:addItem(detail.name)
     end
+
     if not info.detailed then
         info:setDetails(detail)
     end
@@ -59,14 +67,16 @@ function InvManager:pushItemsTo(searchItem, destDevice, destSlot)
     end
     for i, device in ipairs(self.storage) do
         local items = device:list()
+
         for slot, deviceItem in pairs(items) do
             local tryMove = false
+
             if searchItem.name and deviceItem.name == searchItem.name then
                 tryMove = true
             elseif searchItem.tags then
                 local details = device:getItemDetail(slot)
-                for tag,v in pairs(searchItem.tags) do
-                    if details.tags[tag] then
+                for tag, v in pairs(searchItem.tags) do
+                    if v and details.tags[tag] then
                         tryMove = true
                         break
                     end
@@ -94,12 +104,12 @@ end
 function InvManager:pullItemsFrom(srcDevice, srcSlot, count)
     local moved = 0
     self:updateDB(src, srcSlot)
-    
+
     local detail = srcDevice:getItemDetail(slot)
     if count == nil then
         count = detail.count
     end
-    
+
     for i, device in ipairs(self.storage) do
         local toMove = count - moved
         if device:itemAllowed(detail) then
@@ -110,6 +120,7 @@ function InvManager:pullItemsFrom(srcDevice, srcSlot, count)
             end
         end
     end
+
     local info = self.items[detail.name]
     info.count = info.count + moved
     return moved

@@ -6,10 +6,11 @@ local expect, field = expect.expect, expect.field
 
 local CraftManager = Object:subclass()
 
-function CraftManager:init(invMgr,recipes)
-    self.invMgr = invMgr
+function CraftManager:init(server,recipes)
+    self.server = server
     self.recipes = recipes
     self.localName = Common.getNameLocal()
+    self.tasks = {}
 end
 
 function CraftManager:itemMatches(item,criteria)
@@ -172,17 +173,17 @@ function CraftManager:pullOrCraftItemsExt(name,count,dest,destSlot)
         local m = self:craftItemsExt(name,count-n,dest,destSlot)
         return m + n
     end
+
     return n
 end
 
 function CraftManager:scanItemsCraftable()
-    local items = self.invMgr:scanItems()
+    local items = self.invMgr.items
     for k,recipe in pairs(self.recipes) do
         if not items[recipe.name] then
-            items[recipe.name] = self.invMgr:itemCreate(recipe.name,0)
+            self.invMgr:addItem(recipe.name)
         end
     end
-    print(items)
     return items
 end
 

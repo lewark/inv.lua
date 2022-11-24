@@ -52,7 +52,7 @@ end
 
 function DeviceManager:createDevice(name)
     if name == common.getNameLocal() then
-        print("self found in adjacent")
+        print("self add in createDevice")
         return nil
     end
 
@@ -85,6 +85,7 @@ end
 
 function DeviceManager:addDevice(name)
     if self.devices[name] then
+        print("double add device " .. name)
         self.devices[name].destroy()
     end
     self.devices[name] = self:createDevice(name)
@@ -95,6 +96,8 @@ function DeviceManager:removeDevice(name)
     if device then
         self.devices[name] = nil
         device.destroy()
+    else
+        print("double remove device " .. name)
     end
 end
 

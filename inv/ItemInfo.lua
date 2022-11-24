@@ -6,7 +6,7 @@ local ItemInfo = Object:subclass()
 -- Items of an ID always have the same name, tags, and maximum count
 -- This is not true for display names! (See CC computers)
 -- TODO: Do this better
-function ItemInfo:init(name, details)
+function ItemInfo:init(name)
     self.name = name
     self.count = 0
     
@@ -14,10 +14,6 @@ function ItemInfo:init(name, details)
     self.maxCount = nil
     self.tags = nil
     self.detailed = false
-    
-    if details then
-        self:setDetails(details)
-    end
 end
 
 function ItemInfo:setDetails(details)
