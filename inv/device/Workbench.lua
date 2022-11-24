@@ -13,7 +13,7 @@ function Workbench:init(server)
     }
 end
 
-function Workbench:craft()
+function Workbench:craft(recipe)
     Workbench.superClass.craft(self, recipe)
     turtle.select(self:mapSlot(10))
     turtle.craft()
