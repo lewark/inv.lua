@@ -9,11 +9,12 @@ function Machine:init(server, name, deviceType, config)
     self.slots = self.config.slots
     self.busy = false
     self.remainingOutput = {}
-    table.insert(server.craftManager.machines, self)
+
+    self.server.craftManager:addMachine(self)
 end
 
 function Machine:destroy()
-    Common.removeItem(server.craftManager.machines, self)
+    self.server.craftManager:removeMachine(self)
 end
 
 function Machine:mapSlot(virtSlot)

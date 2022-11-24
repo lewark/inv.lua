@@ -8,13 +8,11 @@ function Storage:init(server, name, deviceType, config)
     self.priority = self.config.priority or 0
     self.filter = self.config.filter
 
-    table.insert(self.server.invManager.storage, self)
-    self.server.invManager.scanInventory(self)
+    self.server.invManager:addInventory(self)
 end
 
 function Storage:destroy()
-    Common.removeItem(self.server.invManager.storage, self)
-    self.server.invManager:scanItems()
+    self.server.invManager:removeInventory(self)
 end
 
 function Storage:itemAllowed(item)

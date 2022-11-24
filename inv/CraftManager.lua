@@ -10,7 +10,21 @@ function CraftManager:init(server,recipes)
     self.server = server
     self.recipes = recipes
     self.localName = Common.getNameLocal()
+    self.machines = {}
     self.tasks = {}
+end
+
+function CraftManager:addMachine(self, device)
+    local machineTable = self.machines[device.type]
+    if not machineTable then
+        machineTable = {}
+        self.machines[device.type] = machineTable
+    end
+    machineTable[device.name] = device
+end
+
+function CraftManager:removeMachine(self, device)
+    self.machines[device.type][device.name] = nil
 end
 
 function CraftManager:itemMatches(item,criteria)
