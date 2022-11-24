@@ -2,9 +2,8 @@ local expect = require "cc.expect"
 
 -- Creates an instance of a class, and then calls the class's init() method
 -- with the provided arguments.
-local function new(self, ...)
-    local instance = setmetatable({},{__index=self})
-    instance.class = self
+local function new(class, ...)
+    local instance = setmetatable({}, class.instanceMeta)
     ret, msg = pcall(instance.init, instance, ...)
     if not ret then
         error(msg, 2) -- propagate error up to caller
@@ -12,10 +11,18 @@ local function new(self, ...)
     return instance
 end
 
+-- Converts a table into a class.
+local function makeClass(class, superClass)
+    class.class = class
+    class.superClass = superClass
+    class.instanceMeta = {__index=class}
+    return setmetatable(class, {__index=superClass, __call=new})
+end
+
 -- Implements basic inheritance features.
 local Object = {}
 
-setmetatable(Object, {__call=new})
+makeClass(Object)
 
 -- Object constructor.
 --
@@ -32,7 +39,7 @@ function Object:init(...) end
 
 -- Creates a subclass of an existing class.
 function Object:subclass()
-    return setmetatable({superClass=self},{__index=self,__call=new})
+    return makeClass({}, self)
 end
 
 -- Returns true if the Object is an instance of the provided class or a subclass.
