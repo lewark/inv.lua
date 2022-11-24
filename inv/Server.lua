@@ -14,7 +14,6 @@ function Server:init()
     --self.craftManager = CraftManager(self)
 
     self.deviceManager:scanDevices()
-    self.invManager:scanInventories()
 end
 
 function Server:mainLoop()
