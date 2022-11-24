@@ -16,9 +16,9 @@ function DeviceManager:init(server, overrides)
 
     for _,v in pairs(overrides) do
         if v.type then
-            mgr.typeOverrides[v.type] = v
+            self.typeOverrides[v.type] = v
         elseif v.name then
-            mgr.nameOverrides[v.name] = v
+            self.nameOverrides[v.name] = v
         end
     end
 end
