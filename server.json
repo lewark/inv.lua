@@ -3,6 +3,10 @@
         {
             "type":"storagedrawers:controller",
             "priority":3
+        },
+        {
+            "type":"minecraft:furnace",
+            "purpose":"crafting"
         }
     ]
 }
