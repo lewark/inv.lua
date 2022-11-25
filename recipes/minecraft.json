@@ -1,6 +1,6 @@
 [
     {
-        "machine":"inv:workbench",
+        "machine":"workbench",
         "input":{
             "1":{"name":"minecraft:oak_log"}
         },
@@ -13,7 +13,7 @@
         }
     },
     {
-        "machine":"inv:workbench",
+        "machine":"workbench",
         "input":{
             "1":{"tag":"minecraft:planks"},
             "4":{"tag":"minecraft:planks"}
@@ -27,7 +27,7 @@
         }
     },
     {
-        "machine":"inv:workbench",
+        "machine":"workbench",
         "input":{
             "1":{"tag":"minecraft:planks"},
             "2":{"tag":"minecraft:planks"},
@@ -40,7 +40,7 @@
         }
     },
     {
-        "machine":"inv:workbench",
+        "machine":"workbench",
         "input":{
             "1":{"name":"minecraft:cobblestone"},
             "2":{"name":"minecraft:cobblestone"},

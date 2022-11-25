@@ -17,7 +17,7 @@ function Server:init()
     self.taskManager = TaskManager(self)
     self.rpcManager = RPCManager
 
-    --self.craftManager:loadRecipes("recipes/minecraft.json")
+    self.craftManager:loadRecipes("recipes/minecraft.json")
     self.deviceManager:scanDevices()
 end
 
