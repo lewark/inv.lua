@@ -3,11 +3,12 @@ local WaitTask = require 'inv.task.WaitTask'
 
 local CraftTask = Task:subclass()
 
-function CraftTask:init(server, parent, recipe, dest)
+function CraftTask:init(server, parent, recipe, dest, destSlot)
     CraftTask.superClass.init(self, server, parent)
     self.machine = nil
     self.recipe = recipe
     self.dest = dest
+    self.destSlot = destSlot
 end
 
 function CraftTask:run()
@@ -35,7 +36,7 @@ function CraftTask:run()
             return false
         end
         print("crafting")
-        self.machine:craft(self.recipe, self.dest)
+        self.machine:craft(self.recipe, self.dest, self.destSlot)
         print("craft finished")
     end
     print("pulling output")
