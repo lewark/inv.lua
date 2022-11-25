@@ -6,6 +6,7 @@ local Task = Object:subclass()
 function Task:init(server, parent)
     self.server = server
     self.subTasks = {}
+    self.nSubTasks = 0
     self.parent = parent
     self.id = server.taskManager.nextID()
 end

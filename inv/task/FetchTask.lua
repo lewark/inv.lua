@@ -7,6 +7,8 @@ function FetchTask:init(server, parent, item)
     self.item = item
 end
 
+function FetchTask:run()
 
+end
 
 return FetchTask
