@@ -8,32 +8,32 @@
             "10":{
                 "name":"minecraft:oak_planks",
                 "count":4,
-                "tags":{"minecraft:planks":true}
+                "tag":"minecraft:planks"
             }
         }
     },
     {
         "machine":"workbench",
         "input":{
-            "1":{"tags":{"minecraft:planks":true}},
-            "4":{"tags":{"minecraft:planks":true}}
+            "1":{"tag":"minecraft:planks"},
+            "4":{"tag":"minecraft:planks"}
         },
         "output":{
             "10":{
                 "name":"minecraft:stick",
                 "count":4,
-                "tags":{"forge:rods/wooden":true}
+                "tag":"forge:rods/wooden"
             }
         }
     },
     {
         "machine":"workbench",
         "input":{
-            "1":{"tags":{"minecraft:planks":true}},
-            "2":{"tags":{"minecraft:planks":true}},
-            "3":{"tags":{"minecraft:planks":true}},
-            "5":{"tags":{"forge:rods/wooden":true}},
-            "8":{"tags":{"forge:rods/wooden":true}}
+            "1":{"tag":"minecraft:planks"},
+            "2":{"tag":"minecraft:planks"},
+            "3":{"tag":"minecraft:planks"},
+            "5":{"tag":"forge:rods/wooden"},
+            "8":{"tag":"forge:rods/wooden"}
         },
         "output":{
             "10":{"name":"minecraft:wooden_pickaxe"}
@@ -45,8 +45,8 @@
             "1":{"name":"minecraft:cobblestone"},
             "2":{"name":"minecraft:cobblestone"},
             "3":{"name":"minecraft:cobblestone"},
-            "5":{"tags":{"forge:rods/wooden":true}},
-            "8":{"tags":{"forge:rods/wooden":true}}
+            "5":{"tag":"forge:rods/wooden"},
+            "8":{"tag":"forge:rods/wooden"}
         },
         "output":{
             "10":{"name":"minecraft:stone_pickaxe"}
@@ -58,8 +58,8 @@
             "1":{"name":"minecraft:iron_ingot"},
             "2":{"name":"minecraft:iron_ingot"},
             "3":{"name":"minecraft:iron_ingot"},
-            "5":{"tags":{"forge:rods/wooden":true}},
-            "8":{"tags":{"forge:rods/wooden":true}}
+            "5":{"tag":"forge:rods/wooden"},
+            "8":{"tag":"forge:rods/wooden"}
         },
         "output":{
             "10":{"name":"minecraft:iron_pickaxe"}

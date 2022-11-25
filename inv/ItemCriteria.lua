@@ -4,7 +4,15 @@ local ItemCriteria = Object:subclass()
 
 function ItemCriteria:init(spec)
     self.name = spec.name
-    self.tags = spec.tags
+
+    self.tags = nil
+    if spec.tags then
+        self.tags = spec.tags
+    elseif spec.tag then
+        self.tags = {}
+        self.tags[spec.tag] = true
+    end
+
     self.count = 1
     if spec.count ~= nil then
         self.count = spec.count
