@@ -10,7 +10,10 @@
         },
         {
             "name":"minecraft:chest_0",
-            "filter":{"name":"minecraft:cobblestone"},
+            "filters":[
+                {"name":"minecraft:cobblestone"},
+                {"tags":{"minecraft:planks":true}}
+            ],
             "priority":3
         }
     ]
