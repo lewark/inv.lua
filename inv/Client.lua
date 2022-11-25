@@ -214,7 +214,7 @@ end
 
 function ClientUI:fetchItems()
     --print("started fetch")
-    local itemsByName = self:serverCall("scanItemsCraftable",{})
+    local itemsByName = self:serverCall("listItems",{})
     self.items = {}
     self.list.items = {}
     for k,v in pairs(itemsByName) do

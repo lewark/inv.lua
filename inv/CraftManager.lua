@@ -102,5 +102,4 @@ function CraftManager:pullOrCraftItemsExt(name,count,dest,destSlot)
     return n
 end
 
-
 return CraftManager
