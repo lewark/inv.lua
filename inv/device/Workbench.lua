@@ -14,8 +14,8 @@ function Workbench:init(server, name, deviceType)
     self.location = Common.getNameLocal()
 end
 
-function Workbench:craft(recipe)
-    Workbench.superClass.craft(self, recipe)
+function Workbench:craft(recipe, dest, destSlot)
+    Workbench.superClass.craft(self, recipe, dest, destSlot)
     turtle.select(self:mapSlot(10))
     turtle.craft()
     self:pullOutput()

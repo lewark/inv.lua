@@ -33,8 +33,11 @@ function CraftTask:run()
         end
         print("crafting")
         self.machine:craft(self.recipe, self.dest)
+        print("craft finished")
     end
+    print("pulling output")
     self.machine:pullOutput()
+    print("pulling output finished")
     if not self.machine:busy() then
         return true
     end

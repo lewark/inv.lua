@@ -1,12 +1,16 @@
 local Device = require 'inv.device.Device'
 local Common = require 'inv.Common'
+local ItemCriteria = require 'inv.ItemCriteria'
 
 local Storage = Device:subclass()
 
 function Storage:init(server, name, deviceType, config)
     Storage.superClass.init(self, server, name, deviceType, config)
     self.priority = self.config.priority or 0
-    self.filter = self.config.filter
+    self.filter = nil
+    if self.config.filter then
+        self.filter = ItemCriteria(self.config.filter)
+    end
 
     self.server.invManager:addInventory(self)
 end
@@ -16,20 +20,7 @@ function Storage:destroy()
 end
 
 function Storage:itemAllowed(item)
-    if not self.filter then
-        return true
-    end
-    if self.filter.name and self.filter.name[item.name] then
-        return true
-    end
-    if self.filter.tag and item.tags then
-        for tag, v in pairs(self.filter.tags) do
-            if item.tags[tag] and v then
-                return true
-            end
-        end
-    end
-    return false
+    return not self.filter or self.filter:matches(item)
 end
 
 function Storage:list()

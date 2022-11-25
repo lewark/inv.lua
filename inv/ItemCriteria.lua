@@ -4,7 +4,7 @@ local ItemCriteria = Object:subclass()
 
 function ItemCriteria:init(spec)
     self.name = spec.name
-    self.tag = spec.tag
+    self.tags = spec.tags
     self.count = 1
     if spec.count ~= nil then
         self.count = spec.count
@@ -15,8 +15,12 @@ function ItemCriteria:matches(item)
     if self.name then
         return self.name == item.name
     end
-    if self.tag and item.tags then
-        return item.tags[tag]
+    if self.tags and item.tags then
+        for tag, v in pairs(self.tags) do
+            if item.tags[tag] then
+                return true
+            end
+        end
     end
     return false
 end

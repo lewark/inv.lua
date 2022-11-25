@@ -15,8 +15,8 @@
     {
         "machine":"workbench",
         "input":{
-            "1":{"tag":"minecraft:planks"},
-            "4":{"tag":"minecraft:planks"}
+            "1":{"tags":{"minecraft:planks":true}},
+            "4":{"tags":{"minecraft:planks":true}}
         },
         "output":{
             "10":{
@@ -29,11 +29,11 @@
     {
         "machine":"workbench",
         "input":{
-            "1":{"tag":"minecraft:planks"},
-            "2":{"tag":"minecraft:planks"},
-            "3":{"tag":"minecraft:planks"},
-            "5":{"tag":"forge:rods/wooden"},
-            "8":{"tag":"forge:rods/wooden"}
+            "1":{"tags":{"minecraft:planks":true}},
+            "2":{"tags":{"minecraft:planks":true}},
+            "3":{"tags":{"minecraft:planks":true}},
+            "5":{"tags":{"forge:rods/wooden":true}},
+            "8":{"tags":{"forge:rods/wooden":true}}
         },
         "output":{
             "10":{"name":"minecraft:wooden_pickaxe"}

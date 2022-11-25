@@ -41,15 +41,18 @@ function CraftManager:loadRecipes(filename)
                 end
                 if not self.server.invManager.items[item.name] then
                     local info = self.server.invManager:addItem(item.name)
-                    if item.tag then
-                        info.tags[item.tag] = true
+                    if item.tags then
+                        for tag, v in pairs(item.tags) do
+                            info.tags[tag] = v
+                        end
                     end
                 end
             end
-            -- TODO: limited to one tag?
-            if item.tag then
-                if not self.tagRecipes[item.tag] then
-                    self.tagRecipes[item.tag] = recipe
+            if item.tags then
+                for tag, v in pairs(item.tags) do
+                    if v and not self.tagRecipes[tag] then
+                        self.tagRecipes[tag] = recipe
+                    end
                 end
             end
         end

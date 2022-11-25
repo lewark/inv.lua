@@ -57,8 +57,8 @@ function Machine:handleOutputSlot(item, virtSlot, realSlot)
             if self.dest then
                 local outItem = self.recipe.output[virtSlot]
                 self.server.invManager:pushItemsTo(
-                    ItemCriteria({name=outItem.name,tag=outItem.tag,count=n}),
-                    dest
+                    ItemCriteria({name=outItem.name,tags=outItem.tags,count=n}),
+                    self.dest, self.destSlot
                 )
             end
         else
