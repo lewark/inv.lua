@@ -30,7 +30,7 @@ function Machine:craft(recipe)
     for slot, item in pairs(self.recipe.output) do
         self.remaining[slot] = item.count
     end
-    for virtSlot, crit in pairs(self.recipe.input)
+    for virtSlot, crit in pairs(self.recipe.input) do
         self.server.invManager.pushItemsTo(crit, self, self:mapSlot(virtSlot))
     end
 end
