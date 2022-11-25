@@ -51,10 +51,7 @@ function DeviceManager:getConfig(name, deviceType)
 end
 
 function DeviceManager:createDevice(name)
-    if name == Common.getNameLocal() then
-        print("self add in createDevice")
-        return nil
-    end
+    assert(name ~= Common.getNameLocal())
 
     local types = { peripheral.getType(name) }
     local deviceType = nil
@@ -70,9 +67,7 @@ function DeviceManager:createDevice(name)
 
     if deviceType == "turtle" then
         return ClientDevice(self.server, name, deviceType)
-    end
-    
-    if deviceType == "workbench" then
+    elseif deviceType == "workbench" then
         return Workbench(self.server, name, deviceType)
     end
 
