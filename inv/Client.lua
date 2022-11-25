@@ -244,7 +244,7 @@ function ClientUI:moveSelection(n)
     turtle.select(slot)
 end
 
-local function main(args)
+function ClientUI:mainLoop(args)
     if #args < 1 then
         print("Usage: Client SERVER_ID")
         return
@@ -252,9 +252,8 @@ local function main(args)
     serverID = tonumber(args[1])
     --local config = Common.loadJSON(config_path)
     rednet.open(Common.getModemSide())
-    local root = ClientUI(serverID)
-    root:mainLoop()
+    ClientUI.superClass.mainLoop(self)
     rednet.close(Common.getModemSide())
 end
 
-main({...})
+return ClientUI
