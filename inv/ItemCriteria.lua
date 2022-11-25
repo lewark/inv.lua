@@ -43,4 +43,27 @@ function ItemCriteria:matchesCount(item, count)
     return count >= self.count
 end
 
+function ItemCriteria:copy()
+    return ItemCriteria({name=self.name,tags=self.tags,count=self.count})
+end
+
+function ItemCriteria:stack(items)
+    local stacked = {}
+    for slot, item in pairs(items) do
+        local i = 1
+        local didStack = false
+        for i, item2 in ipairs(stacked) do
+            if item:matches(item2) then
+                item2.count = item2.count + item.count
+                didStack = true
+                break
+            end
+        end
+        if not didStack then
+            table.insert(stacked, item:copy())
+        end
+    end
+    return stacked
+end
+
 return ItemCriteria

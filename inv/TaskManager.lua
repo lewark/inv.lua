@@ -15,6 +15,7 @@ function TaskManager:nextID()
 end
 
 function TaskManager:update()
+    --print("calling update")
     local i = 1
     while i <= #self.active do
         local task = self.active[i]

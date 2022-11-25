@@ -1,5 +1,6 @@
 local Task = require 'inv.task.Task'
 local WaitTask = require 'inv.task.WaitTask'
+local ItemCriteria = require 'inv.ItemCriteria'
 
 local CraftTask = Task:subclass()
 
@@ -13,10 +14,7 @@ end
 
 function CraftTask:run()
     if not self.machine then
-        local testInput = {}
-        for slot, item in pairs(self.recipe.input) do
-            table.insert(testInput, item)
-        end
+        local testInput = ItemCriteria:stack(self.recipe.input)
         local rem = self.server.invManager:tryMatchAll(testInput)
         if #rem > 0 then
             print("item dependencies required")

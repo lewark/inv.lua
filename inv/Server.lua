@@ -35,6 +35,7 @@ end
 function Server:mainLoop()
     rednet.open(Common.getModemSide())
     while true do
+        local runTasks = true
         evt = {os.pullEventRaw()}
         if evt[1] == "rednet_message" then
             self:onMessage(evt[2], evt[3])
@@ -45,14 +46,15 @@ function Server:mainLoop()
         elseif evt[1] == "terminate" then
             break
         elseif evt[1] == "timer" and evt[2] ~= self.taskTimer then
-            continue
+            runTasks = false
         end
-        if self.taskManager:update() then
+        if runTasks and self.taskManager:update() then
             self.taskTimer = os.startTimer(1)
-        end
-        print(#self.taskManager.active)
-        for i,t in pairs(self.taskManager.sleeping) do
-            print("sleeping",i)
+            print(#self.taskManager.active)
+            --for i,t in pairs(self.taskManager.sleeping) do
+            --    print("sleeping",i)
+            --end
+            --print(math.random(1,100))
         end
     end
     rednet.close(Common.getModemSide())

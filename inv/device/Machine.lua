@@ -54,11 +54,9 @@ function Machine:handleOutputSlot(item, virtSlot, realSlot)
         if self.recipe.output[virtSlot]:matches(item) then
             self.remaining[virtSlot] = self.remaining[virtSlot] - n
             if self.dest then
-                local outItem = self.recipe.output[virtSlot]
-                self.server.invManager:pushItemsTo(
-                    ItemCriteria({name=outItem.name,tags=outItem.tags,count=n}),
-                    self.dest, self.destSlot
-                )
+                local outItem = self.recipe.output[virtSlot]:copy()
+                outItem.count = n
+                self.server.invManager:pushItemsTo(outItem, self.dest, self.destSlot)
             end
         else
             print("unexpected output " .. item.name .. " in " .. self.name)
