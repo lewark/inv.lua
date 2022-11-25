@@ -73,14 +73,29 @@ function InvManager:updateDB(detail)
 
     if not info.detailed then
         info:setDetails(detail)
+        self:updateTags(info.name)
     end
 end
 
+-- File the item under its given tags
+function InvManager:updateTags(name)
+    local info = self.items[name]
+    for tag, v in pairs(info.tags) do
+        local entries = self.tags[tag]
+        if not entries then
+            entries = {}
+            self.tags[tag] = entries
+        end
+        entries[name] = info
+    end
+end
+
+-- todo: improve this
 function InvManager:tryMatchAll(searchItems)
     local s = Common.shallowCopy(searchItems)
     for name, item in pairs(self.items) do
         local n = item.count
-        
+
         local i = 1
         while i <= #s do
             local searchItem = s[i]
@@ -95,18 +110,36 @@ function InvManager:tryMatchAll(searchItems)
     return s
 end
 
+-- Returns a list of all known item types matching the given spec
+function InvManager:resolveCriteria(criteria)
+    local result = {}
+    if criteria.name then
+        result[criteria.name] = true
+    elseif criteria.tags then
+        for tag, v in pairs(criteria.tags) do
+            local entries = self.tags[tag]
+            if entries then
+                for name, item in pairs(entries) do
+                    result[name] = true
+                end
+            end
+        end
+    end
+    return result
+end
+
 -- Attempts to push a given amount of items out from the system
 -- destSlot is optional
 function InvManager:pushItemsTo(criteria, destDevice, destSlot)
     local moved = 0
+    local matches = self:resolveCriteria(criteria)
 
     self:ensureSorted()
     for i, device in ipairs(self.storage) do
         local items = device:list()
 
         for slot, deviceItem in pairs(items) do
-            local details = device:getItemDetail(slot)
-            if criteria:matches(details) then
+            if matches[deviceItem.name] then
                 local toMove = math.min(deviceItem.count, criteria.count - moved)
                 local n = device:pushItems(destDevice, slot, toMove, destSlot)
                 moved = moved + n
@@ -127,7 +160,7 @@ end
 -- Attempts to pull a given amount of items into the system
 function InvManager:pullItemsFrom(item, srcDevice, srcSlot)
     local moved = 0
-    self:updateDB(item)
+    self:updateDB(item) -- ensure we know what we're adding to the system
 
     self:ensureSorted()
     for i, device in ipairs(self.storage) do

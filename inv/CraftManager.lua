@@ -11,7 +11,6 @@ local CraftManager = Object:subclass()
 function CraftManager:init(server)
     self.server = server
     self.recipes = {}
-    self.tagRecipes = {}
     self.localName = Common.getNameLocal()
     self.machines = {}
     self.tasks = {}
@@ -35,58 +34,30 @@ function CraftManager:loadRecipes(filename)
     for i, spec in ipairs(data) do
         local recipe = Recipe(spec)
         for slot, item in pairs(recipe.output) do
-            if item.name then
-                if not self.recipes[item.name] then
-                    self.recipes[item.name] = recipe
-                end
-                local info = self.server.invManager.items[item.name]
-                if not info then
-                    info = self.server.invManager:addItem(item.name)
-                end
-                if not info.detailed then
-                    if item.tags then
-                        for tag, v in pairs(item.tags) do
-                            info.tags[tag] = v
-                        end
-                    end
-                end
+            assert(item.name) -- output should not be generic
+            if not self.recipes[item.name] then
+                self.recipes[item.name] = recipe
             end
-            if item.tags then
+            local info = self.server.invManager.items[item.name]
+            if not info then
+                info = self.server.invManager:addItem(item.name)
+            end
+            if not info.detailed and item.tags then
                 for tag, v in pairs(item.tags) do
-                    if v and not self.tagRecipes[tag] then
-                        self.tagRecipes[tag] = recipe
-                    end
+                    info.tags[tag] = v
                 end
+                self.server.invManager:updateTags(info.name)
             end
         end
     end
-end
-
-function CraftManager:itemMatches(item,criteria)
-    expect(1, item, "table")
-    expect(2, criteria, "table")
-    if criteria.name then
-        return criteria.name == item.name
-    elseif criteria.tag then
-        --print(textutils.serialize(self.invMgr.itemDB))
-        return (self.invMgr.items[item.name] and self.invMgr.items[item.name].tags[criteria.tag])
-    end
-    return false
 end
 
 function CraftManager:findRecipe(item)
-    if item.name then
+    local results = self.server.invManager:resolveCriteria(item)
+    for name, v in results do
         local recipe = self.recipes[item.name]
         if recipe then
             return recipe
-        end
-    end
-    if item.tags then
-        for tag, v in pairs(item.tags) do
-            local recipe = self.tagRecipes[tag]
-            if recipe then
-                return recipe
-            end
         end
     end
     return nil
@@ -101,17 +72,14 @@ function CraftManager:findMachine(machineType)
             end
             print(name,"busy")
         end
-    else
-        print("no",machineType,"found")
     end
+    print("no",machineType,"found")
     return nil
 end
 
 function CraftManager:pushOrCraftItemsTo(criteria,dest,destSlot)
-    --print("pullOrCraftItemsExt")
     local n = self.server.invManager:pushItemsTo(criteria,dest,destSlot)
 
-    --print(n)
     if n < criteria.count then
         local recipe = self:findRecipe(criteria)
         if recipe then
@@ -122,6 +90,7 @@ function CraftManager:pushOrCraftItemsTo(criteria,dest,destSlot)
                     break
                 end
             end
+
             local toMake = criteria.count - n
             local crafts = math.ceil(toMake / nOut)
             for i=1,crafts do
