@@ -12,7 +12,11 @@ end
 
 function CraftTask:run()
     if not self.machine then
-        local rem = self.server.invManager:tryMatchAll(self.recipe.input)
+        local testInput = {}
+        for slot, item in pairs(self.recipe.input) do
+            table.insert(testInput, item)
+        end
+        local rem = self.server.invManager:tryMatchAll(testInput)
         if #rem > 0 then
             print("item dependencies required")
             for i, item in ipairs(rem) do
@@ -28,7 +32,6 @@ function CraftTask:run()
         print(self.recipe.machine)
         self.machine = self.server.craftManager:findMachine(self.recipe.machine)
         if not self.machine then
-            print("no machine")
             return false
         end
         print("crafting")

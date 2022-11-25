@@ -50,7 +50,6 @@ end
 
 function InvManager:scanInventory(device)
     local items = device:list()
-    --print("scanInventory")
 
     for slot, item in pairs(items) do
         local detail = device:getItemDetail(slot)
@@ -106,7 +105,8 @@ function InvManager:pushItemsTo(criteria, destDevice, destSlot)
         local items = device:list()
 
         for slot, deviceItem in pairs(items) do
-            if criteria:matches(deviceItem) then
+            local details = device:getItemDetail(slot)
+            if criteria:matches(details) then
                 local toMove = math.min(deviceItem.count, criteria.count - moved)
                 local n = device:pushItems(destDevice, slot, toMove, destSlot)
                 moved = moved + n

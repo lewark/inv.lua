@@ -236,8 +236,8 @@ function ClientUI:requestItem()
         local item = self.items[self.list.selected]
         local count = tonumber(self.field.text) or 0
         self:serverCall("requestItem",{self.localName,item.name,count})
-        self:fetchItems()
-        self.list:onSelectionChanged()
+        --self:fetchItems()
+        --self.list:onSelectionChanged()
     end
 end
 

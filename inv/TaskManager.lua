@@ -24,7 +24,7 @@ function TaskManager:update()
             task:destroy()
             if parent and parent.nSubTasks == 0 then
                 self.sleeping[parent.id] = nil
-                table.insert(self.tasks, parent)
+                table.insert(self.active, parent)
             end
         elseif task.nSubTasks > 0 then
             table.remove(self.active, i)

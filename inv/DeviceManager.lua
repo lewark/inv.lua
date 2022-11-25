@@ -51,7 +51,6 @@ function DeviceManager:getConfig(name, deviceType)
 end
 
 function DeviceManager:createDevice(name)
-    --print("createDevice '"..name.."'")
     if name == Common.getNameLocal() then
         print("self add in createDevice")
         return nil
@@ -69,8 +68,6 @@ function DeviceManager:createDevice(name)
         end
     end
 
-    --print("type",deviceType)
-
     if deviceType == "turtle" then
         return ClientDevice(self.server, name, deviceType)
     end
@@ -80,10 +77,8 @@ function DeviceManager:createDevice(name)
     end
 
     local config = self:getConfig(name, deviceType)
-    --print(config.purpose)
 
     if config.purpose == "crafting" then
-        --print("crafting")
         return Machine(self.server, name, deviceType, config)
     elseif config.purpose == "storage" or genericTypes["inventory"] then
         return Storage(self.server, name, deviceType, config)
@@ -93,7 +88,6 @@ function DeviceManager:createDevice(name)
 end
 
 function DeviceManager:addDevice(name)
-    --print("addDevice",name)
     if self.devices[name] then
         print("double add device " .. name)
         self.devices[name]:destroy()
@@ -102,7 +96,6 @@ function DeviceManager:addDevice(name)
 end
 
 function DeviceManager:removeDevice(name)
-    --print("removeDevice",name)
     local device = self.devices[name]
     if device then
         self.devices[name] = nil

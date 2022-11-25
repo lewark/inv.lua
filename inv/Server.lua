@@ -32,20 +32,9 @@ function Server:onMessage(clientID, message)
 end
 
 function Server:mainLoop()
-
-    --print(textutils.serialize(recipes))
-
-    --print(cmgr:pullOrCraftItemsExt("minecraft:wooden_pickaxe",10,"turtle_1",1))
-
-    --print(textutils.serialize(cmgr:scanItemsCraftable()))
-    --print(textutils.serialize(mgr.itemDB))
-
     rednet.open(Common.getModemSide())
-    --rednet.host(Common.PROTOCOL,os.getComputerLabel())
     while true do
         evt = {os.pullEventRaw()}
-        --print(textutils.serialize(evt))
-        --print(unpack(evt))
         if evt[1] == "rednet_message" then
             self:onMessage(evt[2], evt[3])
         elseif evt[1] == "peripheral" then
@@ -59,9 +48,11 @@ function Server:mainLoop()
             -- todo: make better
             os.startTimer(1)
         end
-        --print(#self.taskManager.active)
+        print(#self.taskManager.active)
+        for i,t in pairs(self.taskManager.sleeping) do
+            print("sleeping",i)
+        end
     end
-    --rednet.unhost(Common.PROTOCOL)
     rednet.close(Common.getModemSide())
 end
 

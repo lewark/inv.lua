@@ -39,8 +39,11 @@ function CraftManager:loadRecipes(filename)
                 if not self.recipes[item.name] then
                     self.recipes[item.name] = recipe
                 end
-                if not self.server.invManager.items[item.name] then
-                    local info = self.server.invManager:addItem(item.name)
+                local info = self.server.invManager.items[item.name]
+                if not info then
+                    info = self.server.invManager:addItem(item.name)
+                end
+                if not info.detailed then
                     if item.tags then
                         for tag, v in pairs(item.tags) do
                             info.tags[tag] = v
@@ -78,10 +81,12 @@ function CraftManager:findRecipe(item)
             return recipe
         end
     end
-    if item.tag then
-        local recipe = self.tagRecipes[tag]
-        if recipe then
-            return recipe
+    if item.tags then
+        for tag, v in pairs(item.tags) do
+            local recipe = self.tagRecipes[tag]
+            if recipe then
+                return recipe
+            end
         end
     end
     return nil
@@ -124,7 +129,6 @@ function CraftManager:pushOrCraftItemsTo(criteria,dest,destSlot)
             end
         end
     end
-    print("push finished")
     return n
 end
 

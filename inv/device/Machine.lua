@@ -39,9 +39,8 @@ function Machine:craft(recipe, dest, destSlot)
         self.remaining[slot] = item.count
     end
     for virtSlot, crit in pairs(self.recipe.input) do
-        --print("push start")
-        self.server.invManager:pushItemsTo(crit, self, self:mapSlot(virtSlot))
-        --print("push end")
+        local n = self.server.invManager:pushItemsTo(crit, self, self:mapSlot(virtSlot))
+        assert(n == crit.count)
     end
 end
 
