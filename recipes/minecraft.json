@@ -45,6 +45,32 @@
             "1":{"name":"minecraft:cobblestone"},
             "2":{"name":"minecraft:cobblestone"},
             "3":{"name":"minecraft:cobblestone"},
+            "5":{"tags":{"forge:rods/wooden":true}},
+            "8":{"tags":{"forge:rods/wooden":true}}
+        },
+        "output":{
+            "10":{"name":"minecraft:stone_pickaxe"}
+        }
+    },
+    {
+        "machine":"workbench",
+        "input":{
+            "1":{"name":"minecraft:iron_ingot"},
+            "2":{"name":"minecraft:iron_ingot"},
+            "3":{"name":"minecraft:iron_ingot"},
+            "5":{"tags":{"forge:rods/wooden":true}},
+            "8":{"tags":{"forge:rods/wooden":true}}
+        },
+        "output":{
+            "10":{"name":"minecraft:iron_pickaxe"}
+        }
+    },
+    {
+        "machine":"workbench",
+        "input":{
+            "1":{"name":"minecraft:cobblestone"},
+            "2":{"name":"minecraft:cobblestone"},
+            "3":{"name":"minecraft:cobblestone"},
             "4":{"name":"minecraft:cobblestone"},
             "6":{"name":"minecraft:cobblestone"},
             "7":{"name":"minecraft:cobblestone"},
@@ -63,6 +89,16 @@
         },
         "output":{
             "3":{"name":"minecraft:stone","count":1}
+        }
+    },
+    {
+        "machine":"minecraft:furnace",
+        "input":{
+            "1":{"name":"minecraft:raw_iron","count":8},
+            "2":{"name":"minecraft:charcoal"}
+        },
+        "output":{
+            "3":{"name":"minecraft:iron_ingot","count":8}
         }
     }
 ]
