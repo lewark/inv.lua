@@ -7,13 +7,13 @@ local Server = Object:subclass()
 
 function Server:init()
     local config = Common.loadJSON("server.json")
-    --local recipes = Common.loadJSON("recipes/minecraft.json")
 
     self.deviceManager = DeviceManager(self, config.overrides)
     self.invManager = InvManager(self)
     self.craftManager = CraftManager(self)
     self.taskManager = TaskManager(self)
 
+    self.craftManager:loadRecipes("recipes/minecraft.json")
     self.deviceManager:scanDevices()
 end
 

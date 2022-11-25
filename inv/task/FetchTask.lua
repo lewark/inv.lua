@@ -8,7 +8,10 @@ function FetchTask:init(server, parent, item)
 end
 
 function FetchTask:run()
-
+    if #self.server.invManager:tryMatchAll({self.item}) == 0 then
+        return true
+    end
+    return false
 end
 
 return FetchTask

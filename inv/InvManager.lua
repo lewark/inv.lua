@@ -76,85 +76,50 @@ function InvManager:updateDB(device, slot)
     end
 end
 
-function InvManager:hasItems(searchItem)
-    local count = 1
-    if searchItem.count ~= nil then
-        count = searchItem.count
-    end
-    if searchItem.name then
-        local item = self.items[searchItem.name]
-        if item then
-            return item.count >= count
-        end
-        return false
-    end
-    if searchItem.tags then
-        for name, item in pairs(self.items) do
-            if item.tags then
-                for tag, v in pairs(searchItem.tags) do
-                    if v and item.tags[tags] and item.count >= count then
-                        return true
-                    end
-                end
+function InvManager:tryMatchAll(searchItems)
+    local s = Common.shallowCopy(searchItems)
+    for name, item in pairs(self.items) do
+        local n = item.count
+        
+        local i = 1
+        while i <= #s do
+            local searchItem = s[i]
+            if searchItem:matchesCount(item,n) then
+                n = n - searchItem.count
+                table.remove(s, i)
+            else
+                i = i + 1
             end
         end
     end
-    return false
+    return s
 end
 
-function InvManager:findItems(searchItem, procedure)
+-- Attempts to push a given amount of items out from the system
+-- destSlot is optional
+function InvManager:pushItemsTo(criteria, destDevice, destSlot)
+    local moved = 0
+
     self:ensureSorted()
     for i, device in ipairs(self.storage) do
         local items = device:list()
 
         for slot, deviceItem in pairs(items) do
-            if criteria(device, slot, deviceItem) and procedure(device, slot, deviceItem) then
-                return
-            end
-        end
-    end
-end
+            if criteria:matches(deviceItem) then
+                local toMove = math.min(item.count, count - moved)
+                local n = device:pushItems(destDevice, slot, toMove, destSlot)
+                moved = moved + n
 
-function InvManager:matches(searchItem)
-    return function(device, slot, deviceItem)
-        if searchItem.name and deviceItem.name == searchItem.name then
-            matches = true
-        elseif searchItem.tags then
-            local details = device:getItemDetail(slot)
-            for tag, v in pairs(searchItem.tags) do
-                if v and details.tags[tag] then
-                    matches = true
-                    break
+                local info = self.items[deviceItem.name]
+                info.count = info.count - n
+
+                if moved >= count then
+                    return moved
                 end
             end
         end
     end
-end
 
--- Attempts to push a given amount of items out from the system
--- destSlot is optional
-function InvManager:pushItemsTo(searchItem, destDevice, destSlot)
-    local count = 1
-    if searchItem.count ~= nil then
-        count = searchItem.count
-    end
-    local moved = 0
-
-    local function procedure(device, slot, item)
-        local toMove = math.min(item.count, count - moved)
-        local n = device:pushItems(destDevice, slot, toMove, destSlot)
-        moved = moved + n
-
-        local info = self.items[deviceItem.name]
-        info.count = info.count - n
-
-        if moved >= count then
-            return true
-        end
-        return false
-    end
-
-    self:findItems(self:matches(searchItem), procedure)
     return moved
 end
 

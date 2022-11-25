@@ -69,11 +69,21 @@ function CraftManager:findRecipe(item)
             return recipe
         end
     end
-    if item.tags then
-         for tag, v in pairs(item.tags) do
-            local recipe = self.tagRecipes[tag]
-            if recipe then
-                return recipe
+    if item.tag then
+        local recipe = self.tagRecipes[tag]
+        if recipe then
+            return recipe
+        end
+    end
+    return nil
+end
+
+function CraftManager:findMachine(machineType)
+    local machinesOfType = self.machines[machineType]
+    if machinesOfType then
+        for name, machine in pairs(machinesOfType) do
+            if not machine:busy() then
+                return machine
             end
         end
     end
