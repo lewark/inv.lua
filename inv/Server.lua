@@ -16,6 +16,7 @@ function Server:init()
     self.craftManager = CraftManager(self)
     self.taskManager = TaskManager(self)
     self.rpcManager = RPCManager
+    self.taskTimer = nil
 
     self.craftManager:loadRecipes("recipes/minecraft.json")
     self.deviceManager:scanDevices()
@@ -43,10 +44,11 @@ function Server:mainLoop()
             self.deviceManager:removeDevice(evt[2])
         elseif evt[1] == "terminate" then
             break
+        elseif evt[1] == "timer" and evt[2] ~= self.taskTimer then
+            continue
         end
         if self.taskManager:update() then
-            -- todo: make better
-            os.startTimer(1)
+            self.taskTimer = os.startTimer(1)
         end
         print(#self.taskManager.active)
         for i,t in pairs(self.taskManager.sleeping) do
