@@ -1,9 +1,10 @@
 local Object = require 'object.Object'
+local Common = require 'inv.Common'
 local CraftManager = require 'inv.CraftManager'
 local DeviceManager = require 'inv.DeviceManager'
 local InvManager = require 'inv.InvManager'
 local RPCManager = require 'inv.RPCManager'
-local Common = require 'inv.Common'
+local TaskManager = require 'inv.TaskManager'
 
 local Server = Object:subclass()
 
