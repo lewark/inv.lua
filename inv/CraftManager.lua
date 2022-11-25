@@ -117,7 +117,7 @@ function CraftManager:pushOrCraftItemsTo(criteria,dest,destSlot)
             local toMake = criteria.count - n
             local crafts = math.ceil(toMake / nOut)
             for i=1,crafts do
-                self.server.taskManager:addTask(CraftTask(self.server, nil, recipe))
+                self.server.taskManager:addTask(CraftTask(self.server, nil, recipe, dest, destSlot))
             end
         end
     end

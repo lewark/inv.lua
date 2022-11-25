@@ -1,5 +1,6 @@
 local Device = require 'inv.device.Device'
 local Common = require 'inv.Common'
+local ItemCriteria = require 'inv.ItemCriteria'
 
 local Machine = Device:subclass()
 
@@ -7,6 +8,8 @@ function Machine:init(server, name, deviceType, config)
     Machine.superClass.init(self, server, name, deviceType, config)
     self.recipe = nil
     self.slots = nil
+    self.dest = nil
+    self.destSlot = nil
     if self.config.slots then
         self.slots = Common.integerKeys(self.config.slots)
     end
@@ -26,17 +29,19 @@ function Machine:mapSlot(virtSlot)
     return virtSlot
 end
 
-function Machine:craft(recipe)
+function Machine:craft(recipe, dest, destSlot)
     if self:busy() then error("Machine " .. self.name .. " busy") end
     self.recipe = recipe
+    self.dest = dest
+    self.destSlot = destSlot
     self.remaining = {}
     for slot, item in pairs(self.recipe.output) do
         self.remaining[slot] = item.count
     end
     for virtSlot, crit in pairs(self.recipe.input) do
-        print("push start")
+        --print("push start")
         self.server.invManager:pushItemsTo(crit, self, self:mapSlot(virtSlot))
-        print("push end")
+        --print("push end")
     end
 end
 
@@ -49,6 +54,13 @@ function Machine:handleOutputSlot(item, virtSlot, realSlot)
         n = self.server.invManager:pullItemsFrom(item, self, realSlot)
         if self.recipe.output[virtSlot]:matches(item) then
             self.remaining[virtSlot] = self.remaining[virtSlot] - n
+            if self.dest then
+                local outItem = self.recipe.output[virtSlot]
+                self.server.invManager:pushItemsTo(
+                    ItemCriteria({name=outItem.name,tag=outItem.tag,count=n}),
+                    dest
+                )
+            end
         else
             print("unexpected output " .. item.name .. " in " .. self.name)
         end
