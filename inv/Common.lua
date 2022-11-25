@@ -4,17 +4,26 @@ Common.PROTOCOL = "inv"
 
 Common.SIDES = {"top","bottom","left","right","front","back"}
 
+Common.modem = nil
+Common.modemSide = nil
+
 function Common.getModemSide()
-    for i, side in ipairs(Common.SIDES) do
-        if peripheral.getType(side) == "modem" and peripheral.wrap(side).getNameLocal then
-            return side --peripheral.wrap(side)
+    if not Common.modemSide then
+        for i, side in ipairs(Common.SIDES) do
+            if peripheral.getType(side) == "modem" and peripheral.wrap(side).getNameLocal then
+                Common.modemSide = side
+                break
+            end
         end
     end
-    return nil
+    return Common.modemSide
 end
 
 function Common.getModem()
-    return peripheral.wrap(Common.getModemSide())
+    if not Common.modem then
+        Common.modem = peripheral.wrap(Common.getModemSide())
+    end
+    return Common.modem
 end
 
 function Common.getNameLocal()
