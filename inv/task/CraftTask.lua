@@ -4,7 +4,7 @@ local FetchTask = require 'inv.task.FetchItemTask'
 local CraftTask = Task:subclass()
 
 function CraftTask:init(server, parent, recipe)
-    CraftTask.superClass.init(server, parent)
+    CraftTask.superClass.init(self, server, parent)
     self.machine = nil
     self.recipe = recipe
 end
@@ -16,9 +16,9 @@ function CraftTask:run()
             for i, item in ipairs(rem) do
                 local recipe = self.server.craftManager:findRecipe(item)
                 if recipe then
-                    self.server.taskManager.addTask(CraftTask(self.server, self, recipe))
+                    self.server.taskManager:addTask(CraftTask(self.server, self, recipe))
                 else
-                    self.server.taskManager.addTask(FetchTask(self.server, self, item))
+                    self.server.taskManager:addTask(FetchTask(self.server, self, item))
                 end
             end
             return false

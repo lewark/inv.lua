@@ -32,18 +32,21 @@ function CraftManager:loadRecipes(filename)
     data = Common.loadJSON(filename)
     for i, recipe in ipairs(data) do
         for slot, item in pairs(recipe.output) do
-            if not self.recipes[item.name] then
-                self.recipes[item.name] = recipe
-            end
-            if not self.invManager.items[item.name] then
-                local info = self.invManager.addItem(item.name)
-                if item.tags then
-                    info.tags = item.tags
+            if item.name then
+                if not self.recipes[item.name] then
+                    self.recipes[item.name] = recipe
+                end
+                if not self.server.invManager.items[item.name] then
+                    local info = self.server.invManager:addItem(item.name)
+                    if item.tag then
+                        info.tags[item.tag] = true
+                    end
                 end
             end
-            for tag, v in pairs(item. tags) do
-                if v and not self.tagRecipes[tag] then
-                    self.tagRecipes[tag] = recipe
+            -- TODO: limited to one tag?
+            if item.tag then
+                if not self.tagRecipes[item.tag] then
+                    self.tagRecipes[item.tag] = recipe
                 end
             end
         end

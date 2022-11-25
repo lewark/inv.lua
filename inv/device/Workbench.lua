@@ -3,8 +3,8 @@ local Common = require 'inv.Common'
 
 local Workbench = Machine:subclass()
 
-function Workbench:init(server)
-    Workbench.superClass.init(self, server, Common.getNameLocal(), "inv:workbench", {})
+function Workbench:init(server, name, deviceType)
+    Workbench.superClass.init(self, server, name, deviceType, {})
     self.slots = {
         [1]=1,  [2]=2,  [3]=3,
         [4]=5,  [5]=6,  [6]=7,
@@ -14,7 +14,7 @@ function Workbench:init(server)
 end
 
 function Workbench:craft(recipe)
-    Workbench.superClass.craft(self, recipe)
+    Workbench.superClass:craft(self, recipe)
     turtle.select(self:mapSlot(10))
     turtle.craft()
     self:pullOutput()

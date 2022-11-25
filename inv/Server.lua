@@ -11,13 +11,13 @@ local Server = Object:subclass()
 function Server:init()
     local config = Common.loadJSON("server.json")
 
-    self.deviceManager = DeviceManager(self, config.overrides)
     self.invManager = InvManager(self)
+    self.deviceManager = DeviceManager(self, config.overrides)
     self.craftManager = CraftManager(self)
     self.taskManager = TaskManager(self)
     self.rpcManager = RPCManager
 
-    self.craftManager:loadRecipes("recipes/minecraft.json")
+    --self.craftManager:loadRecipes("recipes/minecraft.json")
     self.deviceManager:scanDevices()
 end
 
@@ -26,8 +26,8 @@ function Server:send(clientID, message)
 end
 
 function Server:onMessage(clientID, message)
-    if self.rpcManager[msg[1]] then
-        self.rpcManager[msg[1]](self, unpack(msg[2]))
+    if self.rpcManager[message[1]] then
+        self.rpcManager[message[1]](self, clientID, unpack(message[2]))
     end
 end
 
@@ -45,6 +45,7 @@ function Server:mainLoop()
     while true do
         evt = {os.pullEventRaw()}
         --print(textutils.serialize(evt))
+        --print(unpack(evt))
         if evt[1] == "rednet_message" then
             self:onMessage(evt[2], evt[3])
         elseif evt[1] == "peripheral" then

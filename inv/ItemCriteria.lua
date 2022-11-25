@@ -2,7 +2,7 @@ local Object = require 'object.Object'
 
 local ItemCriteria = Object:subclass()
 
-local ItemCriteria:init(spec)
+function ItemCriteria:init(spec)
     self.name = spec.name
     self.tag = spec.tag
     self.count = 1
@@ -11,7 +11,7 @@ local ItemCriteria:init(spec)
     end
 end
 
-local ItemCriteria:matches(item)
+function ItemCriteria:matches(item)
     if self.name then
         return self.name == item.name
     end
@@ -21,7 +21,7 @@ local ItemCriteria:matches(item)
     return false
 end
 
-local ItemCriteria:matchesCount(item, count)
+function ItemCriteria:matchesCount(item, count)
     if not self:matches(item) then
         return false
     end

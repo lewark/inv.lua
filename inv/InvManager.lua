@@ -19,13 +19,13 @@ function InvManager:init(server)
     self.sorted = false
 end
 
-function InvManager:addInventory(self, device)
+function InvManager:addInventory(device)
     table.insert(self.storage, device)
-    self.scanInventory(device)
+    self:scanInventory(device)
     self.sorted = false
 end
 
-function InvManager:removeInventory(self, device)
+function InvManager:removeInventory(device)
     Common.removeItem(self.storage, device)
     self:scanItems()
     -- removal does not affect sort
@@ -53,12 +53,12 @@ function InvManager:scanInventory(device)
 
     for slot, item in pairs(items) do
         self:updateDB(device, slot)
-        items[item.name].count = items[item.name].count + item.count
+        self.items[item.name].count = self.items[item.name].count + item.count
     end
 end
 
 function InvManager:addItem(name)
-    local info = Item(name)
+    local info = ItemInfo(name)
     self.items[name] = info
     return info
 end
@@ -106,14 +106,14 @@ function InvManager:pushItemsTo(criteria, destDevice, destSlot)
 
         for slot, deviceItem in pairs(items) do
             if criteria:matches(deviceItem) then
-                local toMove = math.min(item.count, count - moved)
+                local toMove = math.min(deviceItem.count, criteria.count - moved)
                 local n = device:pushItems(destDevice, slot, toMove, destSlot)
                 moved = moved + n
 
                 local info = self.items[deviceItem.name]
                 info.count = info.count - n
 
-                if moved >= count then
+                if moved >= criteria.count then
                     return moved
                 end
             end
@@ -126,10 +126,11 @@ end
 -- Attempts to pull a given amount of items into the system
 function InvManager:pullItemsFrom(srcDevice, srcSlot, count)
     local moved = 0
-    self:updateDB(src, srcSlot)
+    -- TODO: replace this elsewhere
+    --self:updateDB(src, srcSlot)
 
-    local detail = srcDevice:getItemDetail(slot)
     if count == nil then
+        local detail = srcDevice:getItemDetail(slot)
         count = detail.count
     end
 
@@ -145,8 +146,10 @@ function InvManager:pullItemsFrom(srcDevice, srcSlot, count)
         end
     end
 
-    local info = self.items[detail.name]
-    info.count = info.count + moved
+    --local info = self.items[detail.name]
+    --info.count = info.count + moved
+    -- TODO: replace this
+    self:scanInventories()
     return moved
 end
 

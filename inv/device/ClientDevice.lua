@@ -6,8 +6,12 @@ function ClientDevice:init(server, name, deviceType)
     ClientDevice.superClass.init(self, server, name, deviceType)
 end
 
-function getID()
+function ClientDevice:getID()
     return self.interface.getID()
+end
+
+function ClientDevice:getItemDetail(slot)
+    error("getItemDetail not supported on ClientDevice")
 end
 
 return Device

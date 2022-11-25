@@ -103,7 +103,7 @@ function ClientUI:init(serverID)
             if self.list.selected >= 1 and self.list.selected <= #self.items then
                 local item = self.items[self.list.selected]
                 local count = tonumber(self.field.text) or 0
-                self:serverCall("pullOrCraftItemsExt",{item.name,count,self.localName,nil})
+                self:serverCall("requestItem",{self.localName,item.name,count})
                 self:fetchItems()
                 self.list:onSelectionChanged()
             end
@@ -146,7 +146,6 @@ function ClientUI:init(serverID)
         end
     end
     self:onLayout()
-    self:fetchItems()
 end
 
 function ClientUI:setModifier(mod)
@@ -180,7 +179,7 @@ function ClientUI:onKeyUp(key)
 end
 
 function ClientUI:serverCall(func, args)
-    rednet.send(self.serverID, {func, args})
+    rednet.send(self.serverID, {func, args}, Common.PROTOCOL)
     while true do
         -- TODO: Properly utilize coroutines
         id, message = rednet.receive(Common.PROTOCOL)
@@ -234,7 +233,7 @@ end
 function ClientUI:depositSlot(slot)
     local count = turtle.getItemCount(slot)
     if count > 0 then
-        self:serverCall("pushItemsExt",{count,self.localName,slot})
+        self:serverCall("storeItem",{self.localName,count,slot})
     end
 end
 
@@ -244,14 +243,10 @@ function ClientUI:moveSelection(n)
     turtle.select(slot)
 end
 
-function ClientUI:mainLoop(args)
-    if #args < 1 then
-        print("Usage: Client SERVER_ID")
-        return
-    end
-    serverID = tonumber(args[1])
+function ClientUI:mainLoop()
     --local config = Common.loadJSON(config_path)
     rednet.open(Common.getModemSide())
+    self:fetchItems()
     ClientUI.superClass.mainLoop(self)
     rednet.close(Common.getModemSide())
 end

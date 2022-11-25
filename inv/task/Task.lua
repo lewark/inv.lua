@@ -8,7 +8,7 @@ function Task:init(server, parent)
     self.subTasks = {}
     self.nSubTasks = 0
     self.parent = parent
-    self.id = server.taskManager.nextID()
+    self.id = server.taskManager:nextID()
     
     if self.parent then
         self.parent.subTasks[self.id] = self

@@ -31,7 +31,7 @@ function Machine:craft(recipe)
         self.remaining[slot] = item.count
     end
     for virtSlot, crit in pairs(self.recipe.input) do
-        self.server.invManager.pushItemsTo(crit, self, self:mapSlot(virtSlot))
+        self.server.invManager:pushItemsTo(crit, self, self:mapSlot(virtSlot))
     end
 end
 
@@ -41,7 +41,7 @@ end
 
 function Machine:handleOutputSlot(item, virtSlot, realSlot)
     if item then
-        n = self.server.invManager.pullItemsFrom(self, realSlot)
+        n = self.server.invManager:pullItemsFrom(self, realSlot)
         if self.recipe.output[virtSlot]:matches(item) then
             self.remaining[virtSlot] = self.remaining[virtSlot] - n
         else

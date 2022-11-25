@@ -4,6 +4,7 @@ local Common = require 'inv.Common'
 local Storage = require 'inv.device.Storage'
 local Workbench = require 'inv.device.Workbench'
 local Machine = require 'inv.device.Machine'
+local ClientDevice = require 'inv.device.ClientDevice'
 
 local DeviceManager = Object:subclass()
 
@@ -25,13 +26,13 @@ end
 
 function DeviceManager:scanDevices()
     for name,device in pairs(self.devices) do
-        device.destroy()
+        device:destroy()
     end
     self.devices = {}
 
-    self.devices[common.getNameLocal()] = Workbench(self.server)
+    --self.devices[Common.getNameLocal()] = Workbench(self.server)
     for i,name in ipairs(peripheral.getNames()) do
-        self:createDevice(name)
+        self:addDevice(name)
     end
 end
 
@@ -51,12 +52,13 @@ function DeviceManager:getConfig(device)
 end
 
 function DeviceManager:createDevice(name)
-    if name == common.getNameLocal() then
+    print("createDevice '"..name.."'")
+    if name == Common.getNameLocal() then
         print("self add in createDevice")
         return nil
     end
 
-    local types = peripheral.getType(name)
+    local types = { peripheral.getType(name) }
     local deviceType = nil
     local genericTypes = {}
 
@@ -69,7 +71,13 @@ function DeviceManager:createDevice(name)
     end
 
     if deviceType == "turtle" then
+        print("type turtle")
         return ClientDevice(self.server, name, deviceType)
+    end
+    
+    if deviceType == "workbench" then
+        print("type workbench")
+        return Workbench(self.server, name, deviceType)
     end
 
     local config = self:getConfig(name, deviceType)
@@ -84,18 +92,20 @@ function DeviceManager:createDevice(name)
 end
 
 function DeviceManager:addDevice(name)
+    print("addDevice",name)
     if self.devices[name] then
         print("double add device " .. name)
-        self.devices[name].destroy()
+        self.devices[name]:destroy()
     end
     self.devices[name] = self:createDevice(name)
 end
 
 function DeviceManager:removeDevice(name)
+    print("removeDevice",name)
     local device = self.devices[name]
     if device then
         self.devices[name] = nil
-        device.destroy()
+        device:destroy()
     else
         print("double remove device " .. name)
     end
