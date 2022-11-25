@@ -5,8 +5,11 @@ local Machine = Device:subclass()
 
 function Machine:init(server, name, deviceType, config)
     Machine.superClass.init(self, server, name, deviceType, config)
-    self.recipe = {}
-    self.slots = self.config.slots
+    self.recipe = nil
+    self.slots = nil
+    if self.config.slots then
+        self.slots = Common.integerKeys(self.config.slots)
+    end
     self.remaining = {}
 
     self.server.craftManager:addMachine(self)
@@ -31,7 +34,9 @@ function Machine:craft(recipe)
         self.remaining[slot] = item.count
     end
     for virtSlot, crit in pairs(self.recipe.input) do
+        print("push start")
         self.server.invManager:pushItemsTo(crit, self, self:mapSlot(virtSlot))
+        print("push end")
     end
 end
 
@@ -51,7 +56,7 @@ function Machine:handleOutputSlot(item, virtSlot, realSlot)
 end
 
 function Machine:pullOutput()
-    for virtSlot, rem in pairs(self.remainingOutput) do
+    for virtSlot, rem in pairs(self.remaining) do
         local realSlot = self:mapSlot(virtSlot)
         local item = self:getItemDetail(realSlot)
         self:handleOutputSlot(item, virtSlot, realSlot)

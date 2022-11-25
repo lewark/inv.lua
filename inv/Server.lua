@@ -55,6 +55,11 @@ function Server:mainLoop()
         elseif evt[1] == "terminate" then
             break
         end
+        if self.taskManager:update() then
+            -- todo: make better
+            os.startTimer(1)
+        end
+        --print(#self.taskManager.active)
     end
     --rednet.unhost(Common.PROTOCOL)
     rednet.close(Common.getModemSide())

@@ -5,7 +5,7 @@ local Common = require 'inv.Common'
 -- TODO: Maybe implement caching of item locations to speed up operations
 --  on large storage networks?
 
-local function deviceSort()
+local function deviceSort(a, b)
     return (a.name < b.name) and not (a.priority < b.priority)
 end
 
@@ -27,7 +27,7 @@ end
 
 function InvManager:removeInventory(device)
     Common.removeItem(self.storage, device)
-    self:scanItems()
+    self:scanInventories()
     -- removal does not affect sort
 end
 
@@ -50,7 +50,7 @@ end
 
 function InvManager:scanInventory(device)
     local items = device:list()
-    print("scanInventory")
+    --print("scanInventory")
 
     for slot, item in pairs(items) do
         local detail = device:getItemDetail(slot)
@@ -132,7 +132,7 @@ function InvManager:pullItemsFrom(item, srcDevice, srcSlot)
     self:ensureSorted()
     for i, device in ipairs(self.storage) do
         local toMove = item.count - moved
-        if device:itemAllowed(detail) then
+        if device:itemAllowed(item) then
             local n = device:pullItems(srcDevice, srcSlot, toMove)
             moved = moved + n
             if moved >= item.count then

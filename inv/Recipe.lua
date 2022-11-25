@@ -1,4 +1,5 @@
 local Object = require 'object.Object'
+local ItemCriteria = require 'inv.ItemCriteria'
 
 local Recipe = Object:subclass()
 
@@ -7,10 +8,10 @@ function Recipe:init(spec)
     self.input = {}
     self.output = {}
     for slot, itemSpec in pairs(spec.input) do
-        self.input[slot] = ItemCriteria(itemSpec)
+        self.input[tonumber(slot)] = ItemCriteria(itemSpec)
     end
     for slot, itemSpec in pairs(spec.output) do
-        self.output[slot] = ItemCriteria(itemSpec)
+        self.output[tonumber(slot)] = ItemCriteria(itemSpec)
     end
 end
 

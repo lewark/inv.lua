@@ -33,6 +33,10 @@ function TaskManager:update()
             i = i + 1
         end
     end
+    if #self.active > 0 then
+        return true
+    end
+    return false
 end
 
 function TaskManager:addTask(task)

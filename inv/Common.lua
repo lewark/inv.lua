@@ -2,8 +2,10 @@ local Common = {}
 
 Common.PROTOCOL = "inv"
 
+Common.SIDES = {"top","bottom","left","right","front","back"}
+
 function Common.getModemSide()
-    for i, side in ipairs({"top","bottom","left","right","front","back"}) do
+    for i, side in ipairs(Common.SIDES) do
         if peripheral.getType(side) == "modem" and peripheral.wrap(side).getNameLocal then
             return side --peripheral.wrap(side)
         end
@@ -55,6 +57,14 @@ function Common.removeItem(t, item)
             return
         end
     end
+end
+
+function Common.integerKeys(t)
+    local x = {}
+    for k, v in t do
+        x[tonumber(k)] = v
+    end
+    return x
 end
 
 return Common

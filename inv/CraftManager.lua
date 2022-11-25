@@ -1,5 +1,7 @@
 local Object = require 'object.Object'
 local Common = require 'inv.Common'
+local CraftTask = require 'inv.task.CraftTask'
+local Recipe = require 'inv.Recipe'
 
 local expect = require "cc.expect"
 local expect, field = expect.expect, expect.field
@@ -30,7 +32,8 @@ end
 
 function CraftManager:loadRecipes(filename)
     data = Common.loadJSON(filename)
-    for i, recipe in ipairs(data) do
+    for i, spec in ipairs(data) do
+        local recipe = Recipe(spec)
         for slot, item in pairs(recipe.output) do
             if item.name then
                 if not self.recipes[item.name] then
@@ -88,20 +91,37 @@ function CraftManager:findMachine(machineType)
             if not machine:busy() then
                 return machine
             end
+            print(name,"busy")
         end
+    else
+        print("no",machineType,"found")
     end
     return nil
 end
 
-function CraftManager:pullOrCraftItemsExt(name,count,dest,destSlot)
+function CraftManager:pushOrCraftItemsTo(criteria,dest,destSlot)
     --print("pullOrCraftItemsExt")
-    local n = self.invMgr:pullItemsExt(name,count,dest,destSlot)
-    --print(n)
-    if n < count then
-        local m = self:craftItemsExt(name,count-n,dest,destSlot)
-        return m + n
-    end
+    local n = self.server.invManager:pushItemsTo(criteria,dest,destSlot)
 
+    --print(n)
+    if n < criteria.count then
+        local recipe = self:findRecipe(criteria)
+        if recipe then
+            local nOut = 0
+            for slot, item in pairs(recipe.output) do
+                if criteria:matches(item) then
+                    nOut = item.count
+                    break
+                end
+            end
+            local toMake = criteria.count - n
+            local crafts = math.ceil(toMake / nOut)
+            for i=1,crafts do
+                self.server.taskManager:addTask(CraftTask(self.server, nil, recipe))
+            end
+        end
+    end
+    print("push finished")
     return n
 end
 

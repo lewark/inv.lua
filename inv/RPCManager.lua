@@ -14,7 +14,7 @@ function RPCManager.requestItem(server, clientID, clientName, itemName, count)
     local device = server.deviceManager.devices[clientName]
     print("request",device,clientName,server.deviceManager.devices)
     local crit = ItemCriteria({name=itemName, count=count})
-    server:send(clientID, server.invManager:pushItemsTo(crit, device))
+    server:send(clientID, server.craftManager:pushOrCraftItemsTo(crit, device))
 end
 
 function RPCManager.storeItem(server, clientID, clientName, item, slot)

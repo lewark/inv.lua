@@ -15,7 +15,7 @@ function DeviceManager:init(server, overrides)
     self.typeOverrides = {}
     self.nameOverrides = {}
 
-    for _,v in pairs(overrides) do
+    for i,v in ipairs(overrides) do
         if v.type then
             self.typeOverrides[v.type] = v
         elseif v.name then
@@ -30,7 +30,6 @@ function DeviceManager:scanDevices()
     end
     self.devices = {}
 
-    --self.devices[Common.getNameLocal()] = Workbench(self.server)
     for i,name in ipairs(peripheral.getNames()) do
         self:addDevice(name)
     end
@@ -44,15 +43,15 @@ function DeviceManager:copyConfig(entries, dest)
     end
 end
 
-function DeviceManager:getConfig(device)
+function DeviceManager:getConfig(name, deviceType)
     local config = {}
-    self:copyConfig(self.typeOverrides[device.type], config)
-    self:copyConfig(self.nameOverrides[device.name], config)
+    self:copyConfig(self.typeOverrides[deviceType], config)
+    self:copyConfig(self.nameOverrides[name], config)
     return config
 end
 
 function DeviceManager:createDevice(name)
-    print("createDevice '"..name.."'")
+    --print("createDevice '"..name.."'")
     if name == Common.getNameLocal() then
         print("self add in createDevice")
         return nil
@@ -70,19 +69,21 @@ function DeviceManager:createDevice(name)
         end
     end
 
+    --print("type",deviceType)
+
     if deviceType == "turtle" then
-        print("type turtle")
         return ClientDevice(self.server, name, deviceType)
     end
     
     if deviceType == "workbench" then
-        print("type workbench")
         return Workbench(self.server, name, deviceType)
     end
 
     local config = self:getConfig(name, deviceType)
+    --print(config.purpose)
 
     if config.purpose == "crafting" then
+        --print("crafting")
         return Machine(self.server, name, deviceType, config)
     elseif config.purpose == "storage" or genericTypes["inventory"] then
         return Storage(self.server, name, deviceType, config)
@@ -92,7 +93,7 @@ function DeviceManager:createDevice(name)
 end
 
 function DeviceManager:addDevice(name)
-    print("addDevice",name)
+    --print("addDevice",name)
     if self.devices[name] then
         print("double add device " .. name)
         self.devices[name]:destroy()
@@ -101,7 +102,7 @@ function DeviceManager:addDevice(name)
 end
 
 function DeviceManager:removeDevice(name)
-    print("removeDevice",name)
+    --print("removeDevice",name)
     local device = self.devices[name]
     if device then
         self.devices[name] = nil

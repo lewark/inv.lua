@@ -5,6 +5,7 @@ local Device = Object:subclass()
 function Device:init(server, name, deviceType, config)
     self.server = server
     self.name = name
+    self.location = name
     self.interface = nil
     self.types = {}
     self.type = deviceType

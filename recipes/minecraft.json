@@ -54,5 +54,15 @@
         "output":{
             "10":{"name":"minecraft:furnace"}
         }
+    },
+    {
+        "machine":"minecraft:furnace",
+        "input":{
+            "1":{"name":"minecraft:cobblestone","count":8},
+            "2":{"name":"minecraft:charcoal"}
+        },
+        "output":{
+            "3":{"name":"minecraft:stone","count":1}
+        }
     }
 ]

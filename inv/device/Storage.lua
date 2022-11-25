@@ -37,11 +37,11 @@ function Storage:list()
 end
 
 function Storage:pushItems(toDevice, fromSlot, limit, toSlot)
-    return self.interface.pushItems(toDevice.name, fromSlot, limit, toSlot)
+    return self.interface.pushItems(toDevice.location, fromSlot, limit, toSlot)
 end
 
 function Storage:pullItems(fromDevice, fromSlot, limit, toSlot)
-    return self.interface.pullItems(fromDevice.name, fromSlot, limit, toSlot)
+    return self.interface.pullItems(fromDevice.location, fromSlot, limit, toSlot)
 end
 
 return Storage

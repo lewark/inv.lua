@@ -5,9 +5,9 @@ local Task = Object:subclass()
 
 function Task:init(server, parent)
     self.server = server
+    self.parent = parent
     self.subTasks = {}
     self.nSubTasks = 0
-    self.parent = parent
     self.id = server.taskManager:nextID()
     
     if self.parent then
@@ -21,9 +21,9 @@ function Task:run()
 end
 
 function Task:destroy()
-    if task.parent then
-        task.parent.subTasks[task.id] = nil
-        task.parent.nSubTasks = task.parent.nSubTasks - 1
+    if self.parent then
+        self.parent.subTasks[self.id] = nil
+        self.parent.nSubTasks = self.parent.nSubTasks - 1
     end
 end
 

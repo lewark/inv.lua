@@ -11,10 +11,11 @@ function Workbench:init(server, name, deviceType)
         [7]=9,  [8]=10, [9]=11,
         [10]=16
     }
+    self.location = Common.getNameLocal()
 end
 
 function Workbench:craft(recipe)
-    Workbench.superClass:craft(self, recipe)
+    Workbench.superClass.craft(self, recipe)
     turtle.select(self:mapSlot(10))
     turtle.craft()
     self:pullOutput()
