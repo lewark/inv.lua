@@ -17,10 +17,10 @@ function RPCManager.requestItem(server, clientID, clientName, itemName, count)
     server:send(clientID, server.invManager:pushItemsTo(crit, device))
 end
 
-function RPCManager.storeItem(server, clientID, clientName, count, slot)
+function RPCManager.storeItem(server, clientID, clientName, item, slot)
     local device = server.deviceManager.devices[clientName]
     print("store",device,clientName)
-    server:send(clientID, server.invManager:pullItemsFrom(device, slot, count))
+    server:send(clientID, server.invManager:pullItemsFrom(item, device, slot))
 end
 
 return RPCManager

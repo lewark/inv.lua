@@ -100,13 +100,7 @@ function ClientUI:init(serverID)
     
     if turtle then
         function self.btnReq.onPressed(btn)
-            if self.list.selected >= 1 and self.list.selected <= #self.items then
-                local item = self.items[self.list.selected]
-                local count = tonumber(self.field.text) or 0
-                self:serverCall("requestItem",{self.localName,item.name,count})
-                self:fetchItems()
-                self.list:onSelectionChanged()
-            end
+            self:requestItem()
         end
     
         function self.btnStore.onPressed(btn)
@@ -231,9 +225,19 @@ function ClientUI:fetchItems()
 end
 
 function ClientUI:depositSlot(slot)
-    local count = turtle.getItemCount(slot)
-    if count > 0 then
-        self:serverCall("storeItem",{self.localName,count,slot})
+    local detail = turtle.getItemDetail(slot, true)
+    if detail and detail.count > 0 then
+        self:serverCall("storeItem",{self.localName,detail,slot})
+    end
+end
+
+function ClientUI:requestItem()
+    if self.list.selected >= 1 and self.list.selected <= #self.items then
+        local item = self.items[self.list.selected]
+        local count = tonumber(self.field.text) or 0
+        self:serverCall("requestItem",{self.localName,item.name,count})
+        self:fetchItems()
+        self.list:onSelectionChanged()
     end
 end
 

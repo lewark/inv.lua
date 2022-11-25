@@ -50,9 +50,11 @@ end
 
 function InvManager:scanInventory(device)
     local items = device:list()
+    print("scanInventory")
 
     for slot, item in pairs(items) do
-        self:updateDB(device, slot)
+        local detail = device:getItemDetail(slot)
+        self:updateDB(detail)
         self.items[item.name].count = self.items[item.name].count + item.count
     end
 end
@@ -63,8 +65,7 @@ function InvManager:addItem(name)
     return info
 end
 
-function InvManager:updateDB(device, slot)
-    local detail = device:getItemDetail(slot)
+function InvManager:updateDB(detail)
     local info = self.items[detail.name]
 
     if not info then
@@ -124,32 +125,25 @@ function InvManager:pushItemsTo(criteria, destDevice, destSlot)
 end
 
 -- Attempts to pull a given amount of items into the system
-function InvManager:pullItemsFrom(srcDevice, srcSlot, count)
+function InvManager:pullItemsFrom(item, srcDevice, srcSlot)
     local moved = 0
-    -- TODO: replace this elsewhere
-    --self:updateDB(src, srcSlot)
-
-    if count == nil then
-        local detail = srcDevice:getItemDetail(slot)
-        count = detail.count
-    end
+    self:updateDB(item)
 
     self:ensureSorted()
     for i, device in ipairs(self.storage) do
-        local toMove = count - moved
+        local toMove = item.count - moved
         if device:itemAllowed(detail) then
             local n = device:pullItems(srcDevice, srcSlot, toMove)
             moved = moved + n
-            if moved >= count then
+            if moved >= item.count then
                 break
             end
         end
     end
 
-    --local info = self.items[detail.name]
-    --info.count = info.count + moved
-    -- TODO: replace this
-    self:scanInventories()
+    local info = self.items[item.name]
+    info.count = info.count + moved
+
     return moved
 end
 

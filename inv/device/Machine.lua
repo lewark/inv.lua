@@ -41,7 +41,7 @@ end
 
 function Machine:handleOutputSlot(item, virtSlot, realSlot)
     if item then
-        n = self.server.invManager:pullItemsFrom(self, realSlot)
+        n = self.server.invManager:pullItemsFrom(item, self, realSlot)
         if self.recipe.output[virtSlot]:matches(item) then
             self.remaining[virtSlot] = self.remaining[virtSlot] - n
         else
