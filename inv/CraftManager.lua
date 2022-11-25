@@ -15,7 +15,7 @@ function CraftManager:init(server)
     self.tasks = {}
 end
 
-function CraftManager:addMachine(self, device)
+function CraftManager:addMachine(device)
     local machineTable = self.machines[device.type]
     if not machineTable then
         machineTable = {}
@@ -24,11 +24,11 @@ function CraftManager:addMachine(self, device)
     machineTable[device.name] = device
 end
 
-function CraftManager:removeMachine(self, device)
+function CraftManager:removeMachine(device)
     self.machines[device.type][device.name] = nil
 end
 
-function CraftManager:loadRecipes(self, filename)
+function CraftManager:loadRecipes(filename)
     data = Common.loadJSON(filename)
     for i, recipe in ipairs(data) do
         for slot, item in pairs(recipe.output) do
