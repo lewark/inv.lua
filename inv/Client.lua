@@ -30,10 +30,12 @@ function Client:depositSlots(startSlot, endSlot)
     local items = {}
     local nSlots = 0
     for slot=startSlot,endSlot do
-        local detail = turtle.getItemDetail(slot, true)
-        if detail and detail.count > 0 then
-            items[slot] = detail
-            nSlots = nSlots + 1
+        if turtle.getItemCount(slot) > 0 then
+            local detail = turtle.getItemDetail(slot, true)
+            if detail then
+                items[slot] = detail
+                nSlots = nSlots + 1
+            end
         end
     end
     if nSlots > 0 then
