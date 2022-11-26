@@ -55,8 +55,11 @@ function InvManager:scanInventory(device)
     local items = device:list()
 
     for slot, item in pairs(items) do
-        local detail = device:getItemDetail(slot)
-        self:updateDB(detail)
+        local entry = self.items[item.name]
+        if not entry or not entry.detailed then
+            local detail = device:getItemDetail(slot)
+            self:updateDB(detail)
+        end
         self.items[item.name].count = self.items[item.name].count + item.count
     end
 end
