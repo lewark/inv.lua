@@ -28,7 +28,7 @@ end
 
 
 function RPCMethods.unregister(server, clientID)
-    self.server:unregister(clientID)
+    server:unregister(clientID)
 end
 
 return RPCMethods
