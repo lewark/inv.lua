@@ -19,8 +19,8 @@ function Client:serverCall(func, args)
     rednet.send(self.serverID, {func, args}, Common.PROTOCOL)
 end
 
-function Client:fetchItems()
-    self:serverCall("listItems",{})
+function Client:fetchItems(refresh)
+    self:serverCall("listItems",{refresh})
 end
 
 function Client:depositSlots(startSlot, endSlot)

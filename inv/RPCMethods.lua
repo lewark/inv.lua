@@ -2,7 +2,10 @@ local ItemCriteria = require 'inv.ItemCriteria'
 
 local RPCMethods = {}
 
-function RPCMethods.listItems(server, clientID)
+function RPCMethods.listItems(server, clientID, refresh)
+    if refresh then
+        server.invManager:scanInventories()
+    end
     local items = {}
     for k, item in pairs(server.invManager.items) do
         items[k] = item:serialize()

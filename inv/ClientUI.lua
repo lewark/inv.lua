@@ -92,7 +92,7 @@ function ClientUI:init(client)
     end
     
     function self.btnRefresh.onPressed(btn)
-        self.client:fetchItems()
+        self.client:fetchItems(self.modPressed)
     end
     
     if turtle then
