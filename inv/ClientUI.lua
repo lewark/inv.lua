@@ -30,7 +30,7 @@ function ClientUI:init(client)
     self.list = ListBox(self,10,10,{})
     self.sb = ScrollBar(self,self.list)
 
-    self.btnRefresh = Button(self,"Refresh")
+    self.btnRefresh = Button(self,"")
     self.lbl = Label(self,"[Nothing]")
     self.lbl.length = self.sidebarWidth
     self.lbl2 = Label(self,"Count: 0")
@@ -139,10 +139,12 @@ function ClientUI:setModifier(mod)
     self.modPressed = mod
     if turtle then
         if mod then
+            self.btnRefresh.text = "Scan All"
             self.btnStore.text = "S.All"
             self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_UP)
             self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_DOWN)
         else
+            self.btnRefresh.text = "Refresh"
             self.btnStore.text = "Store"
             self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_LEFT)
             self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_RIGHT)
