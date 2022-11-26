@@ -76,17 +76,18 @@ function ClientUI:init(client)
             self.lbl2.text = "Count: "..self.items[self.list.selected].count
             if turtle then
                 self.btnReq.enabled = true
+                self.btnReq.dirty = true
             end
         else
             self.lbl.text = "[Nothing]"
             self.lbl2.text = "Count: 0"
             if turtle then
                 self.btnReq.enabled = false
+                self.btnReq.dirty = true
             end
         end
         self.lbl.dirty = true
         self.lbl2.dirty = true
-        self.btnReq.dirty = true
     end
     
     function self.btnRefresh.onPressed(btn)
