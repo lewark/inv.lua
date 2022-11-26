@@ -149,6 +149,7 @@ function ClientUI:setModifier(mod)
             self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_LEFT)
             self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_RIGHT)
         end
+        self.btnRefresh.dirty = true
         self.btnStore.dirty = true
         self.btnPrevSlot.dirty = true
         self.btnNextSlot.dirty = true
