@@ -28,10 +28,21 @@ function Server:send(clientID, message)
     rednet.send(clientID, message, Common.PROTOCOL)
 end
 
-function Server:onMessage(clientID, message)
-    local method = self.rpcMethods[message[1]]
-    if method then
-        method(self, clientID, unpack(message[2]))
+function Server:register(clientID)
+    self.clients[clientID] = true
+end
+
+function Server:unregister(clientID)
+    self.clients[clientID] = nil
+end
+
+function Server:onMessage(clientID, message, protocol)
+    if protocol == Common.PROTOCOL then
+        self:register(clientID)
+        local method = self.rpcMethods[message[1]]
+        if method then
+            method(self, clientID, unpack(message[2]))
+        end
     end
 end
 
@@ -41,7 +52,7 @@ function Server:mainLoop()
         local runTasks = true
         evt = {os.pullEventRaw()}
         if evt[1] == "rednet_message" then
-            self:onMessage(evt[2], evt[3])
+            self:onMessage(evt[2], evt[3], evt[4])
         elseif evt[1] == "peripheral" then
             self.deviceManager:addDevice(evt[2])
         elseif evt[1] == "peripheral_detach" then

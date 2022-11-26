@@ -102,13 +102,10 @@ function ClientUI:init(client)
     
         function self.btnStore.onPressed(btn)
             if self.modPressed then
-                for i=1,16 do
-                    self.client:depositSlot(i)
-                end
+                self.client:depositAll()
             else
-                self.client:depositSlot(turtle.getSelectedSlot())
+                self.client:depositSlots(turtle.getSelectedSlot())
             end
-            self.list:onSelectionChanged()
         end
         
         function self.btnPrevSlot.onPressed(btn)

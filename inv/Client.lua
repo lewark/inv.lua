@@ -23,11 +23,26 @@ function Client:fetchItems()
     self:serverCall("listItems",{})
 end
 
-function Client:depositSlot(slot)
-    local detail = turtle.getItemDetail(slot, true)
-    if detail and detail.count > 0 then
-        self:serverCall("storeItem",{self.localName,detail,slot})
+function Client:depositSlots(startSlot, endSlot)
+    if not endSlot then
+        endSlot = startSlot
     end
+    local items = {}
+    local nSlots = 0
+    for slot=startSlot,endSlot do
+        local detail = turtle.getItemDetail(slot, true)
+        if detail and detail.count > 0 then
+            items[slot] = detail
+            nSlots = nSlots + 1
+        end
+    end
+    if nSlots > 0 then
+        self:serverCall("storeItems",{self.localName,items})
+    end
+end
+
+function Client:depositAll()
+    self:depositSlots(1,16)
 end
 
 function Client:requestItem(item, count)
@@ -43,7 +58,6 @@ end
 function Client:mainLoop()
     --local config = Common.loadJSON(config_path)
     rednet.open(Common.getModemSide())
-    self:serverCall("register",{})
     self:fetchItems()
     self.ui:mainLoop()
     self:serverCall("unregister",{})
