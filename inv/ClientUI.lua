@@ -9,10 +9,6 @@ local Root = require 'gui.Root'
 local ScrollBar = require 'gui.ScrollBar'
 local TextField = require 'gui.TextField'
 
---print(textutils.serialize(serverCall(0,"pullOrCraftItemsExt",{"minecraft:stick",10,"turtle_1",1})))
-
-local config_path = "client.json"
-
 local ClientUI = Root:subclass()
 
 function ClientUI:init(client)
@@ -59,8 +55,6 @@ function ClientUI:init(client)
         self.btnPlus = Button(self,"+")
         self.btnMinus = Button(self,"-")
         
-        self:setModifier(false)
-        
         self.btnBox:addChild(self.btnPrevSlot,false,false,Constants.LinearAlign.START)
         self.btnBox:addChild(self.btnStore,true,false,Constants.LinearAlign.START)
         self.btnBox:addChild(self.btnNextSlot,false,false,Constants.LinearAlign.START)
@@ -73,6 +67,8 @@ function ClientUI:init(client)
         self.vbox:addChild(self.btnReq,false,true,Constants.LinearAlign.START)
         self.vbox:addChild(self.btnBox,false,true,Constants.LinearAlign.START)
     end
+    
+    self:setModifier(false)
     
     function self.list.onSelectionChanged(list)
         if self.list.selected >= 1 and self.list.selected <= #self.items then
@@ -88,7 +84,9 @@ function ClientUI:init(client)
                 self.btnReq.enabled = false
             end
         end
-        self:onLayout()
+        self.lbl.dirty = true
+        self.lbl2.dirty = true
+        self.btnReq.dirty = true
     end
     
     function self.btnRefresh.onPressed(btn)
@@ -137,19 +135,23 @@ end
 
 function ClientUI:setModifier(mod)
     self.modPressed = mod
+    if mod then
+        self.btnRefresh.text = "ScanNet"
+    else
+        self.btnRefresh.text = "Refresh"
+    end
+    self.btnRefresh.dirty = true
+    
     if turtle then
         if mod then
-            self.btnRefresh.text = "ScanAll"
-            self.btnStore.text = "S.All"
+            self.btnStore.text = " All "
             self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_UP)
             self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_DOWN)
         else
-            self.btnRefresh.text = "Refresh"
             self.btnStore.text = "Store"
             self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_LEFT)
             self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_RIGHT)
         end
-        self.btnRefresh.dirty = true
         self.btnStore.dirty = true
         self.btnPrevSlot.dirty = true
         self.btnNextSlot.dirty = true
@@ -180,13 +182,12 @@ function ClientUI:updateList()
         local line = self:padToWidth(v.displayName,self.list.size[1]-#count)
         table.insert(self.list.items,line .. count)
     end
-    --print("finished fetch")
+    self.list.dirty = true
+    self.sb.dirty = true
     self.list:onSelectionChanged()
-    self:onLayout()
 end
 
 function ClientUI:onEvent(evt)
-    --print(evt[1])
     if evt[1] == "rednet_message" then
         self.client:onMessage(unpack(evt))
     end

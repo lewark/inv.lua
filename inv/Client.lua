@@ -67,12 +67,10 @@ function Client:mainLoop()
 end
 
 function Client:onMessage(evt, fromID, msg, protocol)
-    print(msg)
     if fromID == self.serverID then
         if msg[1] == "items" then
             for k, v in pairs(msg[2]) do
                 self.items[k] = v
-                print(k)
             end
             self.ui:updateList()
         end
