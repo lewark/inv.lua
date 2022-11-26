@@ -1,20 +1,8 @@
 {
     "overrides":[
         {
-            "type":"storagedrawers:controller",
-            "priority":3
-        },
-        {
             "type":"minecraft:furnace",
             "purpose":"crafting"
-        },
-        {
-            "name":"minecraft:chest_0",
-            "filters":[
-                {"name":"minecraft:cobblestone"},
-                {"tags":{"minecraft:planks":true}}
-            ],
-            "priority":3
         }
     ]
 }
