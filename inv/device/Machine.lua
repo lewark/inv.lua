@@ -30,7 +30,7 @@ function Machine:mapSlot(virtSlot)
 end
 
 function Machine:craft(recipe, dest, destSlot)
-    if self:busy() then error("Machine " .. self.name .. " busy") end
+    if self:busy() then error("machine " .. self.name .. " busy") end
     self.recipe = recipe
     self.dest = dest
     self.destSlot = destSlot

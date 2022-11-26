@@ -64,7 +64,7 @@ function Server:mainLoop()
         end
         if runTasks and self.taskManager:update() then
             self.taskTimer = os.startTimer(1)
-            print(#self.taskManager.active)
+            print("active tasks:", #self.taskManager.active)
             --for i,t in pairs(self.taskManager.sleeping) do
             --    print("sleeping",i)
             --end

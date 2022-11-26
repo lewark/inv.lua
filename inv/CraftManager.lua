@@ -37,7 +37,7 @@ function CraftManager:loadRecipes(filename)
             assert(item.name) -- output should not be generic
             if not self.recipes[item.name] then
                 self.recipes[item.name] = recipe
-                print("registered recipe '"..item.name.."'")
+                print("added recipe",item.name)
             end
             local info = self.server.invManager.items[item.name]
             if not info then
@@ -54,10 +54,8 @@ function CraftManager:loadRecipes(filename)
 end
 
 function CraftManager:findRecipe(item)
-    print("Planks",self.recipes["minecraft:oak_planks"])
     local results = self.server.invManager:resolveCriteria(item)
     for name, v in pairs(results) do
-        print("name '"..name.."'")
         local recipe = self.recipes[name]
         if recipe then
             print("recipe found",name)

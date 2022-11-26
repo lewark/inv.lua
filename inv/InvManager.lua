@@ -2,9 +2,6 @@ local Object = require 'object.Object'
 local ItemInfo = require 'inv.ItemInfo'
 local Common = require 'inv.Common'
 
--- TODO: Maybe implement caching of item locations to speed up operations
---  on large storage networks?
-
 local function deviceSort(a, b)
     if a.priority > b.priority then
         return true
