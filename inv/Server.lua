@@ -3,7 +3,7 @@ local Common = require 'inv.Common'
 local CraftManager = require 'inv.CraftManager'
 local DeviceManager = require 'inv.DeviceManager'
 local InvManager = require 'inv.InvManager'
-local RPCManager = require 'inv.RPCManager'
+local RPCMethods = require 'inv.RPCMethods'
 local TaskManager = require 'inv.TaskManager'
 
 local Server = Object:subclass()
@@ -11,11 +11,13 @@ local Server = Object:subclass()
 function Server:init()
     local config = Common.loadJSON("server.json")
 
+    self.clients = {}
+
     self.invManager = InvManager(self)
     self.deviceManager = DeviceManager(self, config.overrides)
     self.craftManager = CraftManager(self)
     self.taskManager = TaskManager(self)
-    self.rpcManager = RPCManager
+    self.rpcMethods = RPCMethods
     self.taskTimer = nil
 
     self.craftManager:loadRecipes("recipes/minecraft.json")
@@ -27,8 +29,8 @@ function Server:send(clientID, message)
 end
 
 function Server:onMessage(clientID, message)
-    if self.rpcManager[message[1]] then
-        self.rpcManager[message[1]](self, clientID, unpack(message[2]))
+    if self.rpcMethods[message[1]] then
+        self.rpcMethods[message[1]](self, clientID, unpack(message[2]))
     end
 end
 
@@ -55,6 +57,13 @@ function Server:mainLoop()
             --    print("sleeping",i)
             --end
             --print(math.random(1,100))
+        end
+        local updated = self.invManager:getUpdatedItems()
+        if updated then
+            local message = {"items", updated}
+            for clientID, clientName in pairs(self.clients) do
+                self:send(clientID, message)
+            end
         end
     end
     rednet.close(Common.getModemSide())

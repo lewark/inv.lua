@@ -17,6 +17,9 @@ function InvManager:init(server)
     self.tags = {}
     self.storage = {}
     self.sorted = false
+
+    self.updated = false
+    self.updatedItems = {}
 end
 
 function InvManager:addInventory(device)
@@ -142,10 +145,16 @@ function InvManager:pushItemsTo(criteria, destDevice, destSlot)
             if matches[deviceItem.name] then
                 local toMove = math.min(deviceItem.count, criteria.count - moved)
                 local n = device:pushItems(destDevice, slot, toMove, destSlot)
-                moved = moved + n
 
-                local info = self.items[deviceItem.name]
-                info.count = info.count - n
+                if n > 0 then
+                    moved = moved + n
+
+                    local info = self.items[deviceItem.name]
+                    info.count = info.count - n
+
+                    self.updated = true
+                    self.updatedItems[deviceItem.name] = true
+                end
 
                 if moved >= criteria.count then
                     return moved
@@ -174,10 +183,28 @@ function InvManager:pullItemsFrom(item, srcDevice, srcSlot)
         end
     end
 
-    local info = self.items[item.name]
-    info.count = info.count + moved
+    if moved > 0 then
+        local info = self.items[item.name]
+        info.count = info.count + moved
+
+        self.updatedItems[item.name] = true
+        self.updated = true
+    end
 
     return moved
+end
+
+function InvManager:getUpdatedItems()
+    if self.updated then
+        local u = {}
+        for name, v in pairs(self.updatedItems) do
+            u[name] = self.items[name]:serialize()
+        end
+        self.updated = false
+        self.updatedItems = {}
+        return u
+    end
+    return nil
 end
 
 return InvManager
