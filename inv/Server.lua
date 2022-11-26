@@ -73,7 +73,7 @@ function Server:mainLoop()
         local updated = self.invManager:getUpdatedItems()
         if updated then
             local message = {"items", updated}
-            print(textutils.serialize(self.clients))
+            --print(textutils.serialize(self.clients))
             for clientID, clientName in pairs(self.clients) do
                 self:send(clientID, message)
             end

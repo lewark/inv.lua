@@ -6,7 +6,12 @@ local Common = require 'inv.Common'
 --  on large storage networks?
 
 local function deviceSort(a, b)
-    return (a.name < b.name) and not (a.priority < b.priority)
+    if a.priority > b.priority then
+        return true
+    elseif a.priority < b.priority then
+        return false
+    end
+    return (a.name < b.name)
 end
 
 local InvManager = Object:subclass()
