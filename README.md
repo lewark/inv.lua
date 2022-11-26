@@ -52,15 +52,8 @@ Custom settings for connected devices like chests, furnaces, barrels, etc. can a
 
 ```json
 {
-    "overrides":[
-    
-        [ ... existing configuration ... ]
-        
-        {
-            "type":"storagedrawers:controller",
-            "priority":3
-        }
-    ]
+    "type":"storagedrawers:controller",
+    "priority":3
 }
 ```
 
@@ -77,7 +70,7 @@ Alternatively, a specific inventory can be given its own unique settings. In thi
 }
 ```
 
-Inventories can also be designated as crafting machines instead of storage. Recipes for machines are configured separately.
+Inventories can also be designated as crafting machines instead of storage. The default `server.json` contains this entry to treat furnaces as a machine:
 
 ```json
 {
