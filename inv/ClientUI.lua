@@ -139,7 +139,7 @@ function ClientUI:setModifier(mod)
     self.modPressed = mod
     if turtle then
         if mod then
-            self.btnRefresh.text = "Scan All"
+            self.btnRefresh.text = "ScanAll"
             self.btnStore.text = "S.All"
             self.btnPrevSlot.text = string.char(Constants.SpecialChars.TRI_UP)
             self.btnNextSlot.text = string.char(Constants.SpecialChars.TRI_DOWN)
