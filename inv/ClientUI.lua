@@ -18,6 +18,8 @@ local ClientUI = Root:subclass()
 function ClientUI:init(client)
     ClientUI.superClass.init(self)
     
+    self.client = client
+    
     self.sidebarWidth = math.floor(self.size[1] / 3)
     self.items = {}
     self.modPressed = false
@@ -90,8 +92,7 @@ function ClientUI:init(client)
     end
     
     function self.btnRefresh.onPressed(btn)
-        self:fetchItems()
-        self.list:onSelectionChanged()
+        self.client:fetchItems()
     end
     
     if turtle then
@@ -180,11 +181,13 @@ function ClientUI:updateList()
         table.insert(self.list.items,line .. count)
     end
     --print("finished fetch")
+    self.list:onSelectionChanged()
     self:onLayout()
 end
 
 function ClientUI:onEvent(evt)
-    if evt[0] == "rednet_message" then
+    --print(evt[1])
+    if evt[1] == "rednet_message" then
         self.client:onMessage(unpack(evt))
     end
     return ClientUI.superClass.onEvent(self, evt)
@@ -212,7 +215,7 @@ function ClientUI:formatCount(n)
     return "x" .. tostring(n) .. suffix
 end
 
-local function ClientUI:requestItem()
+function ClientUI:requestItem()
     if self.list.selected >= 1 and self.list.selected <= #self.items then
         local item = self.items[self.list.selected]
         local count = tonumber(self.field.text) or 0

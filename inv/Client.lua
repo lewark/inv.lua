@@ -43,17 +43,23 @@ end
 function Client:mainLoop()
     --local config = Common.loadJSON(config_path)
     rednet.open(Common.getModemSide())
+    self:serverCall("register",{})
     self:fetchItems()
     self.ui:mainLoop()
+    self:serverCall("unregister",{})
     rednet.close(Common.getModemSide())
 end
 
 function Client:onMessage(evt, fromID, msg, protocol)
-    if msg[1] == "items" then
-        for k, v in pairs(msg[2]) do
-            self.items[k] = v
+    print(msg)
+    if fromID == self.serverID then
+        if msg[1] == "items" then
+            for k, v in pairs(msg[2]) do
+                self.items[k] = v
+                print(k)
+            end
+            self.ui:updateList()
         end
-        self.ui:updateList()
     end
 end
 

@@ -29,8 +29,9 @@ function Server:send(clientID, message)
 end
 
 function Server:onMessage(clientID, message)
-    if self.rpcMethods[message[1]] then
-        self.rpcMethods[message[1]](self, clientID, unpack(message[2]))
+    local method = self.rpcMethods[message[1]]
+    if method then
+        method(self, clientID, unpack(message[2]))
     end
 end
 
@@ -61,6 +62,7 @@ function Server:mainLoop()
         local updated = self.invManager:getUpdatedItems()
         if updated then
             local message = {"items", updated}
+            print(textutils.serialize(self.clients))
             for clientID, clientName in pairs(self.clients) do
                 self:send(clientID, message)
             end
