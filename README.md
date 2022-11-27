@@ -2,9 +2,7 @@
 
 # inv.lua
 
-Inventory management system for ComputerCraft:Tweaked / Restitched. Supports recursive autocrafting using the crafting table or external machines.
-
-This software's UI was made using my [gui.lua](https://github.com/knector01/gui.lua) toolkit.
+This software provides a highly configurable inventory management and autocrafting system for ComputerCraft:Tweaked / Restitched. Complex sequences of recipes can be automatically crafted using a crafting turtle alongside arbitrary crafting machines such as furnaces. A streamlined client interface is also provided, and this interface was created using a [custom GUI toolkit](https://github.com/knector01/gui.lua).
 
 ## Installation
 
@@ -19,7 +17,7 @@ cd inv
 
 This system requires that CC:Tweaked generic peripherals be enabled. Recent versions enable this feature by default but for older ones you may need to change a setting in `computercraft_server.toml`.
 
-To use this system, you must connect your chests to a ComputerCraft wired modem network. CC offers full-block wired modems crafted by putting a small wired modem into the crafting table, and this type must be used when connecting peripherals like chests and turtles that aren't full blocks. Place wired modems on each chest, connect the modems together with modem cables, and right-click on each modem to connect the chest peripherals to the network.
+To use this system, you must connect your chests to a ComputerCraft wired modem network. ComputerCraft offers full-block wired modems crafted by putting a small wired modem into the crafting table, and this type must be used when connecting peripherals like chests and turtles that aren't full blocks. Place wired modems on each chest, connect the modems together with modem cables, and right-click on each modem to connect the chest peripherals to the network.
 
 Then connect a crafting turtle to the network in a similar fashion. This turtle will act as the central server for the inventory system. Install the inv.lua software on this turtle, and run `run_server.lua` to host the server. Optionally, you can also create a `startup.lua` script in the turtle's root directory that runs the server on boot:
 
