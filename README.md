@@ -55,7 +55,7 @@ Custom settings for connected devices such as chests, furnaces, or barrels can b
 }
 ```
 
-Alternatively, a specific inventory can be configured with its own unique settings. In this example, a chest is given filters so that only specific items can be stored within it:
+Alternatively, a specific inventory can be configured with its own unique settings. In this example, an individual chest is given filters so that only specific items can be stored within it:
 
 ```json
 {
