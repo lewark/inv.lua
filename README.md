@@ -6,7 +6,7 @@ This software provides a highly configurable inventory management and autocrafti
 
 ## Installation
 
-This software can be downloaded from GitHub using [gitget](http://www.computercraft.info/forums2/index.php?/topic/17387-gitget-version-2-release/).
+The client and server software can be downloaded from GitHub and installed onto turtles in-game using [gitget](http://www.computercraft.info/forums2/index.php?/topic/17387-gitget-version-2-release/).
 ```
 pastebin get W5ZkVYSi gitget
 gitget knector01 inv.lua master inv
