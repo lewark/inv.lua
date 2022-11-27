@@ -19,7 +19,7 @@ cd inv
 
 This system requires that CC:Tweaked generic peripherals be enabled. Recent versions enable this feature by default but for older ones you may need to change a setting in `computercraft_server.toml`.
 
-To use this system, you must connect your chests to a ComputerCraft wired modem network. CC offers full-block wired modems crafted by putting a small wired modem into the crafting table, and this type must be used when connecting peripherals like chests and turtles that aren't full blocks. Place wired modems on each chest, connect the modems together with modem cables, and make sure to right-click each modem to connect the chest peripherals to the network.
+To use this system, you must connect your chests to a ComputerCraft wired modem network. CC offers full-block wired modems crafted by putting a small wired modem into the crafting table, and this type must be used when connecting peripherals like chests and turtles that aren't full blocks. Place wired modems on each chest, connect the modems together with modem cables, and right-click on each modem to connect the chest peripherals to the network.
 
 Then connect a crafting turtle to the network in a similar fashion. This turtle will act as the central server for the inventory system. Install the inv.lua software on this turtle, and run `run_server.lua` to host the server. Optionally, you can also create a `startup.lua` script in the turtle's root directory that runs the server on boot:
 
@@ -28,7 +28,7 @@ shell.setDir("inv")
 shell.run("run_server.lua")
 ```
 
-Finally, place a separate Advanced Turtle connected to the same network. This one will be used as a client to retrieve items from the inventory system. Install the software as before, then run `inv_client.lua SERVER_ID` on the client turtle, replacing `SERVER_ID` with the numeric computer ID of the server. This ID can be found by running the built-in command `id` on the server turtle, and is not the same as the name displayed when initially connecting the server turtle to the wired network. If desired, you can make a startup script for the client as well:
+Finally, place a separate Advanced Turtle connected to the same network. This one will be used as a client to retrieve items from the inventory system. Install the software as before, then run `inv_client.lua SERVER_ID` on the client turtle, replacing `SERVER_ID` with the numeric computer ID of the server. This ID can be found by running the `id` command  on the server turtle. If desired, you can make a startup script for the client as well:
 
 ```lua
 local SERVER_ID = 1 -- replace with your server's ID
@@ -36,7 +36,7 @@ shell.setDir("inv")
 shell.run("run_client.lua", SERVER_ID)
 ```
 
-You can then use the client turtle's GUI to request items from the storage network, and they will be placed in the turtle's inventory. The turtles and chests can be placed anywhere as long as they are connected to the network by cables and modems. An arbitrary number of client turtles can be connected as well.
+You can then use the client turtle's GUI to request items from the storage network, and they will be placed in the turtle's inventory. The turtles and chests can be placed anywhere as long as they are connected to the network by cables and modems, and an arbitrary number of client turtles can be connected.
 
 ## Troubleshooting
 
@@ -48,7 +48,7 @@ If the client or server crash when run, or you are unable to view the list of it
 
 ### Devices
 
-Custom settings for connected devices like chests, furnaces, barrels, etc. can also be given within `server.json` within the `overrides` list. For example, a type of inventory can be given a higher priority so that items are preferentially stored within inventories of that type:
+Custom settings for connected devices like chests, furnaces, barrels, etc. can also be given within `server.json` inside the `overrides` list. For example, a type of inventory can be given a higher priority so that items are preferentially stored within inventories of that type:
 
 ```json
 {
@@ -79,9 +79,11 @@ Inventories can also be designated as crafting machines instead of storage. The 
 }
 ```
 
+The current possible values for the `purpose` field are `crafting` and `storage`, the latter of which being the default for peripherals with an inventory.
+
 ### Recipes
 
-Custom crafting recipes must be specified in `recipes/minecraft.json`. Like inventory filters, recipes can address input items by name or by Ore Dictionary tags.
+Custom crafting recipes must be specified in `recipes/minecraft.json`. Like inventory filters, recipes can address input items by name or by Ore Dictionary tags. Use the "tag" field for a single tag, or "tags" for a dictionary of the format `{"tag":true,"tag2":true}`.
 
 ```json
 [
