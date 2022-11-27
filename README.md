@@ -2,7 +2,7 @@
 
 # inv.lua
 
-This software provides a highly configurable inventory management and autocrafting system for ComputerCraft:Tweaked / Restitched. Complex sequences of recipes can be automatically crafted using a crafting turtle alongside arbitrary crafting machines such as furnaces. A streamlined client interface is also provided, and this interface was created using a [custom GUI toolkit](https://github.com/knector01/gui.lua).
+This software provides a lightweight, configurable inventory management and autocrafting system for ComputerCraft:Tweaked / Restitched. Sequences of recipes can be automatically crafted using a crafting turtle alongside crafting machines such as furnaces. A client interface is also provided, allowing quick retrieval and crafting of items, and this interface was created using a [custom GUI toolkit](https://github.com/knector01/gui.lua).
 
 ## Installation
 
@@ -46,7 +46,7 @@ If the client or server crash when run, or you are unable to view the list of it
 
 ### Devices
 
-Custom settings for connected devices like chests, furnaces, barrels, etc. can also be given within `server.json` inside the `overrides` list. For example, a type of inventory can be given a higher priority so that items are preferentially stored within inventories of that type:
+Custom settings for connected devices such as chests, furnaces, or barrels can be specified within `server.json` inside the `overrides` list. For example, a type of inventory can be assigned a higher priority so that items are preferentially stored within inventories of that type:
 
 ```json
 {
@@ -55,7 +55,7 @@ Custom settings for connected devices like chests, furnaces, barrels, etc. can a
 }
 ```
 
-Alternatively, a specific inventory can be given its own unique settings. In this example, a chest is given filters so that only specific items can be stored within it:
+Alternatively, a specific inventory can be configured with its own unique settings. In this example, a chest is given filters so that only specific items can be stored within it:
 
 ```json
 {
@@ -77,7 +77,7 @@ Inventories can also be designated as crafting machines instead of storage. The 
 }
 ```
 
-The current possible values for the `purpose` field are `crafting` and `storage`, the latter of which being the default for peripherals with an inventory.
+Possible values for the `purpose` field are `crafting` and `storage`, the latter of which is the default for connected devices with an inventory.
 
 ### Recipes
 
