@@ -169,13 +169,6 @@ function ClientUI:onKeyDown(key,held)
                 self.list:onKeyDown(key, held)
             end
         end
-        if not block or self.focus == self.list then
-            if key == keys.equals then
-                self:adjustItemCount(1)
-            elseif key == keys.minus then
-                self:adjustItemCount(-1)
-            end
-        end
     end
     return true
 end
@@ -189,6 +182,14 @@ function ClientUI:onCharTyped(chr)
             self:storeCurrentItem()
         elseif chr == "E" then
             self.client:depositAll()
+        elseif chr == "=" then
+            self:adjustItemCount(1)
+        elseif chr == "+" then
+            self:adjustItemCount(1, true)
+        elseif chr == "-" then
+            self:adjustItemCount(-1)
+        elseif chr == "_" then
+            self:adjustItemCount(-1, true)
         elseif self.moveKeys[l] then
             self.client:moveSelection(self.moveKeys[l])
         end
@@ -265,9 +266,9 @@ function ClientUI:storeCurrentItem()
     self.client:depositSlots(turtle.getSelectedSlot())
 end
 
-function ClientUI:adjustItemCount(amount)
+function ClientUI:adjustItemCount(amount, forceMod)
     local n = tonumber(self.field.text) or 0
-    local mod = (self.modPressed and 64) or 1
+    local mod = ((self.modPressed or forceMod) and 64) or 1
     self.field.text = tostring(math.max(n+amount*mod,0))
     self.field.dirty = true
 end
