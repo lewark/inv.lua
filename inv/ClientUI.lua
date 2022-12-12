@@ -270,7 +270,7 @@ end
 function ClientUI:adjustItemCount(amount, forceMod)
     local n = tonumber(self.field.text) or 0
     local mod = ((self.modPressed or forceMod) and 64) or 1
-    local newAmount = math.max(math.floor(n/mod+amount)*mod,1)
+    local newAmount = math.max(math.floor(n/mod+amount+0.5)*mod,1)
     self.field.text = tostring(newAmount)
     self.field.dirty = true
 end
