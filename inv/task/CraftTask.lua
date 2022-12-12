@@ -4,6 +4,7 @@ local Item = require 'inv.Item'
 
 local CraftTask = Task:subclass()
 
+-- dest and destSlot are optional.
 function CraftTask:init(server, parent, recipe, dest, destSlot)
     CraftTask.superClass.init(self, server, parent)
     self.machine = nil

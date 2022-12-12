@@ -6,13 +6,19 @@ local Workbench = require 'inv.device.Workbench'
 local Machine = require 'inv.device.Machine'
 local ClientDevice = require 'inv.device.ClientDevice'
 
+-- Manages network-attached devices, including storage and crafting machines.
+-- Specialized behavior is delegated by Devices to the appropriate class
+-- (either InvManager or CraftManager).
 local DeviceManager = Object:subclass()
 
 function DeviceManager:init(server, overrides)
     self.server = server
+    -- table<string, Device>: Devices connected to this network.
     self.devices = {}
 
+    -- table<string, table>: Configuration applied to specific device types.
     self.typeOverrides = {}
+    -- table<string, table>: Configuration applied to individual devices by name.
     self.nameOverrides = {}
 
     for i,v in ipairs(overrides) do
@@ -24,6 +30,8 @@ function DeviceManager:init(server, overrides)
     end
 end
 
+-- Scans and adds all devices connected to the network.
+-- Clears any existing loaded devices beforehand.
 function DeviceManager:scanDevices()
     for name,device in pairs(self.devices) do
         device:destroy()
@@ -35,6 +43,8 @@ function DeviceManager:scanDevices()
     end
 end
 
+-- Copies configuration entries to the given table.
+-- Preexisting entries of the same name are overwritten.
 function DeviceManager:copyConfig(entries, dest)
     if entries then
         for k,v in pairs(entries) do
@@ -43,6 +53,8 @@ function DeviceManager:copyConfig(entries, dest)
     end
 end
 
+-- Gets all configuration for the given device name and type.
+-- Device type settings are overridden by name-specific settings.
 function DeviceManager:getConfig(name, deviceType)
     local config = {}
     self:copyConfig(self.typeOverrides[deviceType], config)
@@ -50,6 +62,8 @@ function DeviceManager:getConfig(name, deviceType)
     return config
 end
 
+-- Creates the appropriate Device for the given network peripheral
+-- as specified in the server configuration.
 function DeviceManager:createDevice(name)
     assert(name ~= Common.getNameLocal())
 
@@ -82,6 +96,8 @@ function DeviceManager:createDevice(name)
     return nil
 end
 
+-- Creates the appropriate Device for the given network peripheral,
+-- then adds it to the device table.
 function DeviceManager:addDevice(name)
     if self.devices[name] then
         print("double add device " .. name)
@@ -90,6 +106,7 @@ function DeviceManager:addDevice(name)
     self.devices[name] = self:createDevice(name)
 end
 
+-- Removes a device from the device table, clearing any associated state.
 function DeviceManager:removeDevice(name)
     local device = self.devices[name]
     if device then

@@ -1,6 +1,8 @@
 local Machine = require 'inv.device.Machine'
 local Common = require 'inv.Common'
 
+-- Represents a crafting table peripheral.
+-- Must be connected directly to the server turtle.
 local Workbench = Machine:subclass()
 
 function Workbench:init(server, name, deviceType)
