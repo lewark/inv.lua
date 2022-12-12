@@ -14,8 +14,7 @@ end
 
 function CraftTask:run()
     if not self.machine then
-        local testInput = Item.stack(self.recipe.input)
-        local rem = self.server.invManager:tryMatchAll(testInput)
+        local rem = self.server.invManager:tryMatchAll(self.recipe.input)
         if #rem > 0 then
             print("item dependencies required")
             for i, item in ipairs(rem) do

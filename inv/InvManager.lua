@@ -2,47 +2,62 @@ local Object = require 'object.Object'
 local Item = require 'inv.Item'
 local Common = require 'inv.Common'
 
-local function deviceSort(a, b)
-    if a.priority > b.priority then
-        return true
-    elseif a.priority < b.priority then
-        return false
-    end
-    return (a.name < b.name)
-end
-
+-- Manages network inventories and item storage/retrieval.
 local InvManager = Object:subclass()
 
 function InvManager:init(server)
     self.server = server
+    -- table<string, Item>: The items stored in this network.
+    -- Indexed by name of the item.
     self.items = {}
+    -- table<string, table<string, Item>>: All items associated with each Ore
+    -- Dictionary tag previously seen on this network.
     self.tags = {}
+    -- table<int, Storage>: The inventories connected to this network.
     self.storage = {}
+    -- bool: Whether the storage list is currently sorted.
     self.sorted = false
 
+    -- bool: Whether the current state of the stored items has been updated.
+    -- If true, then the changes need to be synchronized to the clients.
     self.updated = false
+    -- table<string, bool>: Items that have changed since the last client sync.
     self.updatedItems = {}
 end
 
+-- Adds an inventory to the network, updating the network state as necessary.
 function InvManager:addInventory(device)
     table.insert(self.storage, device)
     self:scanInventory(device)
     self.sorted = false
 end
 
+-- Removes an inventory from the network, updating the network state as necessary.
 function InvManager:removeInventory(device)
     Common.removeItem(self.storage, device)
     self:scanInventories()
     -- removal does not affect sort
 end
 
+-- Static comparison method that returns true if inventory a should be sorted
+-- before inventory b.
+function InvManager.deviceSort(a, b)
+    if a.priority ~= b.priority then
+        return a.priority > b.priority
+    end
+    return (a.name < b.name)
+end
+
+-- Sorts the list of connected inventories if necessary.
 function InvManager:ensureSorted()
     if not self.sorted then
-        table.sort(self.storage, deviceSort)
+        table.sort(self.storage, self.deviceSort)
         self.sorted = true
     end
 end
 
+-- Scans all connected inventories, adding their stored items to the database.
+-- Resets any preexisting item counts to 0 beforehand.
 function InvManager:scanInventories()
     for k, v in pairs(self.items) do
         v.count = 0
@@ -53,6 +68,7 @@ function InvManager:scanInventories()
     end
 end
 
+-- Scans a connected inventory and adds its stored items to the database.
 function InvManager:scanInventory(device)
     local items = device:list()
 
@@ -66,12 +82,15 @@ function InvManager:scanInventory(device)
     end
 end
 
+-- Given an item name, adds a new item to the database.
 function InvManager:addItem(name)
     local info = Item{name=name, count=0}
     self.items[name] = info
     return info
 end
 
+-- Given a detail specification for an item, adds or updates the associated
+-- item in the database if necessary.
 function InvManager:updateDB(detail)
     local info = self.items[detail.name]
 
@@ -85,7 +104,7 @@ function InvManager:updateDB(detail)
     end
 end
 
--- File the item under its given tags
+-- Files the item under its given tags.
 function InvManager:updateTags(name)
     local info = self.items[name]
     for tag, v in pairs(info.tags) do
@@ -98,15 +117,18 @@ function InvManager:updateTags(name)
     end
 end
 
+-- Given a list of items to find, returns a list of requested items that are
+-- not stored in the network.
 -- todo: improve this
 function InvManager:tryMatchAll(searchItems)
-    local s = Common.shallowCopy(searchItems)
+    local s = Item.stack(searchItems)
     for name, item in pairs(self.items) do
         local n = item.count
 
         local i = 1
         while i <= #s do
             local searchItem = s[i]
+            -- TODO: is this check necessary now that Item.stack is used?
             if searchItem:matchesCount(item,n) then
                 n = n - searchItem.count
                 table.remove(s, i)
@@ -118,7 +140,7 @@ function InvManager:tryMatchAll(searchItems)
     return s
 end
 
--- Returns a list of all known item types matching the given spec
+-- Returns a list of all known item types matching the given specification.
 function InvManager:resolveCriteria(criteria)
     local result = {}
     if criteria.name then
@@ -136,8 +158,8 @@ function InvManager:resolveCriteria(criteria)
     return result
 end
 
--- Attempts to push a given amount of items out from the system
--- destSlot is optional
+-- Attempts to push a given amount of items out from the system.
+-- destSlot is optional.
 function InvManager:pushItemsTo(criteria, destDevice, destSlot)
     local moved = 0
     local matches = self:resolveCriteria(criteria)
@@ -171,7 +193,7 @@ function InvManager:pushItemsTo(criteria, destDevice, destSlot)
     return moved
 end
 
--- Attempts to pull a given amount of items into the system
+-- Attempts to pull a given amount of items into the system.
 function InvManager:pullItemsFrom(item, srcDevice, srcSlot)
     local moved = 0
     self:updateDB(item) -- ensure we know what we're adding to the system
@@ -199,6 +221,8 @@ function InvManager:pullItemsFrom(item, srcDevice, srcSlot)
     return moved
 end
 
+-- Returns a list of items changed since the last client sync,
+-- with all items serialized to the proper client format.
 function InvManager:getUpdatedItems()
     if self.updated then
         local u = {}
