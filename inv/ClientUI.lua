@@ -43,9 +43,7 @@ function ClientUI:init(client)
     self.vbox:addChild(self.lbl,false,true,Constants.LinearAlign.START)
     self.vbox:addChild(self.lbl2,false,true,Constants.LinearAlign.START)
     
-    self.blockKeys = {}
-    self.blockKeys[self.list] = true
-    self.blockKeys[self.sb] = true
+    self.blockKeys = {[self.list]=true,[self.sb]=true}
     
     if turtle then
         self.spinBox = LinearContainer(self,1,1,0)
@@ -162,13 +160,9 @@ function ClientUI:onKeyDown(key,held)
         if (key == keys.leftShift or key == keys.leftCtrl) then
             self:setModifier(true)
         end
-        local block = self.blockKeys[self.focus]
-        if not block then
-            if key == keys.up or key == keys.down
-                or key == keys.left or key == keys.right then
-                self.list:onKeyDown(key, held)
-            end
-        end
+    end
+    if not self.blockKeys[self.focus] then
+        self.list:onKeyDown(key, held)
     end
     return true
 end
@@ -204,6 +198,9 @@ end
 function ClientUI:onKeyUp(key)
     if (key == keys.leftShift or key == keys.leftCtrl) then
         self:setModifier(false)
+    end
+    if not self.blockKeys[self.focus] then
+        self.list:onKeyUp(key, held)
     end
 end
 
@@ -273,7 +270,8 @@ end
 function ClientUI:adjustItemCount(amount, forceMod)
     local n = tonumber(self.field.text) or 0
     local mod = ((self.modPressed or forceMod) and 64) or 1
-    self.field.text = tostring(math.max(n+amount*mod,0))
+    local newAmount = math.max(math.floor(n/mod+amount)*mod,1)
+    self.field.text = tostring(newAmount)
     self.field.dirty = true
 end
 
