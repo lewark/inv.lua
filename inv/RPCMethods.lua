@@ -1,4 +1,4 @@
-local ItemCriteria = require 'inv.ItemCriteria'
+local Item = require 'inv.Item'
 
 local RPCMethods = {}
 
@@ -15,7 +15,7 @@ end
 
 function RPCMethods.requestItem(server, clientID, clientName, itemName, count)
     local device = server.deviceManager.devices[clientName]
-    local crit = ItemCriteria({name=itemName, count=count})
+    local crit = Item{name=itemName, count=count}
     server.craftManager:pushOrCraftItemsTo(crit, device)
 end
 
@@ -25,7 +25,6 @@ function RPCMethods.storeItems(server, clientID, clientName, items)
         server.invManager:pullItemsFrom(item, device, slot)
     end
 end
-
 
 function RPCMethods.unregister(server, clientID)
     server:unregister(clientID)

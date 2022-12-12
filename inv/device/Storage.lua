@@ -1,17 +1,18 @@
 local Device = require 'inv.device.Device'
 local Common = require 'inv.Common'
-local ItemCriteria = require 'inv.ItemCriteria'
+local Item = require 'inv.Item'
 
 local Storage = Device:subclass()
 
 function Storage:init(server, name, deviceType, config)
     Storage.superClass.init(self, server, name, deviceType, config)
     self.priority = self.config.priority or 0
+
     self.filters = nil
     if self.config.filters then
         self.filters = {}
         for i, filter in ipairs(self.config.filters) do
-            table.insert(self.filters, ItemCriteria(filter))
+            table.insert(self.filters, Item(filter))
         end
     end
 

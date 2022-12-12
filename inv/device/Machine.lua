@@ -1,6 +1,5 @@
 local Device = require 'inv.device.Device'
 local Common = require 'inv.Common'
-local ItemCriteria = require 'inv.ItemCriteria'
 
 local Machine = Device:subclass()
 

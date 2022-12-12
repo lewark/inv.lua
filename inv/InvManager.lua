@@ -1,5 +1,5 @@
 local Object = require 'object.Object'
-local ItemInfo = require 'inv.ItemInfo'
+local Item = require 'inv.Item'
 local Common = require 'inv.Common'
 
 local function deviceSort(a, b)
@@ -67,7 +67,7 @@ function InvManager:scanInventory(device)
 end
 
 function InvManager:addItem(name)
-    local info = ItemInfo(name)
+    local info = Item{name=name, count=0}
     self.items[name] = info
     return info
 end
