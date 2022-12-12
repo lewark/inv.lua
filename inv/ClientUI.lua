@@ -182,6 +182,10 @@ function ClientUI:onCharTyped(chr)
             self:storeCurrentItem()
         elseif chr == "E" then
             self.client:depositAll()
+        elseif chr == "r" then
+            self.client:fetchItems(false)
+        elseif chr == "R" then
+            self.client:fetchItems(true)
         elseif chr == "=" then
             self:adjustItemCount(1)
         elseif chr == "+" then
