@@ -6,16 +6,19 @@ local Recipe = require 'inv.Recipe'
 local expect = require "cc.expect"
 local expect, field = expect.expect, expect.field
 
+-- Manages crafting machines, recipes, and queuing of crafting tasks.
 local CraftManager = Object:subclass()
 
 function CraftManager:init(server)
     self.server = server
+    -- table<string, Recipe>: Recipes known to this network, indexed by item ID.
     self.recipes = {}
-    self.localName = Common.getNameLocal()
+    -- table<string, table<string, Machine>>: Crafting machines connected to
+    -- this network, indexed by machine type and device name.
     self.machines = {}
-    self.tasks = {}
 end
 
+-- Adds a crafting machine to the network, updating network state as necessary.
 function CraftManager:addMachine(device)
     local machineTable = self.machines[device.type]
     if not machineTable then
@@ -25,10 +28,14 @@ function CraftManager:addMachine(device)
     machineTable[device.name] = device
 end
 
+-- Removes a crafting machine from the network, updating network state as necessary.
 function CraftManager:removeMachine(device)
     self.machines[device.type][device.name] = nil
 end
 
+-- Loads all recipes contained within the given JSON file.
+-- Files should contain an array of tables, with each table
+-- in the format required by the Recipe class.
 function CraftManager:loadRecipes(filename)
     data = Common.loadJSON(filename)
     for i, spec in ipairs(data) do
@@ -53,6 +60,8 @@ function CraftManager:loadRecipes(filename)
     end
 end
 
+-- Finds a recipe to produce the given item,
+-- returning nil if none is found.
 function CraftManager:findRecipe(item)
     local results = self.server.invManager:resolveCriteria(item)
     for name, v in pairs(results) do
@@ -65,6 +74,8 @@ function CraftManager:findRecipe(item)
     return nil
 end
 
+-- Finds a non-busy crafting machine of the given type,
+-- returning nil if none is found.
 function CraftManager:findMachine(machineType)
     local machinesOfType = self.machines[machineType]
     if machinesOfType then
@@ -79,6 +90,8 @@ function CraftManager:findMachine(machineType)
     return nil
 end
 
+-- First attempts to pull the requested amount of items out of the network,
+-- then attempts to craft any remaining requested items.
 function CraftManager:pushOrCraftItemsTo(criteria,dest,destSlot)
     local n = self.server.invManager:pushItemsTo(criteria,dest,destSlot)
 
