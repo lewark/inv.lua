@@ -10,21 +10,22 @@ function WaitTask:init(server, parent, item)
 end
 
 function WaitTask:print()
-    print("waiting on items")
+    write("waiting on items")
     if self.item.name then
-        print(self.item.name)
+        write(" " .. self.item.name)
     elseif self.item.tags then
         for k,v in pairs(self.item.tags) do
-            print(k)
+            write(" " .. k)
         end
     end
+    print()
 end
 
 function WaitTask:run()
     if #self.server.invManager:tryMatchAll({self.item}) == 0 then
         return true
     end
-    --self:print()
+    self:print()
     return false
 end
 
