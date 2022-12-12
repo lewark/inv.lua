@@ -62,7 +62,7 @@ Alternatively, a specific inventory can be configured with its own unique settin
     "name":"minecraft:chest_0",
     "filters":[
         {"name":"minecraft:cobblestone"},
-        {"tags":{"minecraft:planks":true}}
+        {"tags":["minecraft:planks"]}
     ],
     "priority":2
 }
@@ -81,7 +81,7 @@ Possible values for the `purpose` field are `crafting` and `storage`, the latter
 
 ### Recipes
 
-Custom crafting recipes must be specified in `recipes/minecraft.json`. Like inventory filters, recipes can address input items by name or by Ore Dictionary tags. Use the "tag" field for a single tag, or "tags" for a dictionary of the format `{"tag":true,"tag2":true}`.
+Custom crafting recipes must be specified in `recipes/minecraft.json`. Like inventory filters, recipes can address input items by name or by Ore Dictionary tags. The "tags" field may consist of an array of tags, e.g. `["tag","tag2"]`, or a dictionary in the format `{"tag":true,"tag2":true}`. An item matches a tag specification if one or more of the tags in the "tags" list is present on the item.
 
 ```json
 [
@@ -94,21 +94,21 @@ Custom crafting recipes must be specified in `recipes/minecraft.json`. Like inve
             "10":{
                 "name":"minecraft:oak_planks",
                 "count":4,
-                "tag":"minecraft:planks"
+                "tags":["minecraft:planks"]
             }
         }
     },
     {
         "machine":"workbench",
         "input":{
-            "1":{"tag":"minecraft:planks"},
-            "4":{"tag":"minecraft:planks"}
+            "1":{"tags":["minecraft:planks"]},
+            "4":{"tags":["minecraft:planks"]}
         },
         "output":{
             "10":{
                 "name":"minecraft:stick",
                 "count":4,
-                "tag":"forge:rods/wooden"
+                "tags":["forge:rods/wooden"]
             }
         }
     },

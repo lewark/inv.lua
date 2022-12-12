@@ -1,10 +1,9 @@
 local Object = require 'object.Object'
 
--- Describes varying types of items, including optional details such as name,
+-- Represents various types of items, including optional details such as name,
 -- display name, and Ore Dictionary tags.
 -- Used for both tracking counts of stored items and setting criteria for
 -- operations such as crafting and item retrieval.
-
 local Item = Object:subclass()
 
 function Item:init(spec)
@@ -26,9 +25,14 @@ function Item:init(spec)
     -- Always present, but may be empty.
     self.tags = {}
     if spec.tags then
-        self.tags = spec.tags
-    elseif spec.tag then
-        self.tags[spec.tag] = true
+        if spec.tags[1] then
+            -- convert an array of tags to the correct format
+            for i, tag in ipairs(spec.tags) do
+                self.tags[tag] = true
+            end
+        else
+            self.tags = spec.tags
+        end
     end
 
     -- int: The number of items in this item stack (default 1).
