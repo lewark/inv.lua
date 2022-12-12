@@ -134,6 +134,7 @@ function ClientUI:init(client)
     self:onLayout()
 end
 
+-- Sets whether or not the modifier key is pressed, updating the UI as appropriate.
 function ClientUI:setModifier(mod)
     self.modPressed = mod
     if mod then
@@ -171,6 +172,7 @@ function ClientUI:onKeyUp(key)
     end
 end
 
+-- Updates the list of stored items, including item counts
 function ClientUI:updateList()
     self.items = {}
     self.list.items = {}
@@ -195,6 +197,8 @@ function ClientUI:onEvent(evt)
     return ClientUI.superClass.onEvent(self, evt)
 end
 
+-- Pads a string to the specified width.
+-- TODO: merge w/ duplicate code in Label
 function ClientUI:padToWidth(str, n)
     local l = #str
     if l > n then
@@ -205,6 +209,7 @@ function ClientUI:padToWidth(str, n)
     return str
 end
 
+-- Formats an item count, using k or M for thousands/millions
 function ClientUI:formatCount(n)
     local suffix = ""
     if n >= 1000000 then
@@ -217,6 +222,7 @@ function ClientUI:formatCount(n)
     return "x" .. tostring(n) .. suffix
 end
 
+-- Requests the currently selected item.
 function ClientUI:requestItem()
     if self.list.selected >= 1 and self.list.selected <= #self.items then
         local item = self.items[self.list.selected]

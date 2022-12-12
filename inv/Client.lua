@@ -16,14 +16,17 @@ function Client:init(serverID)
     self.items = {}
 end
 
+-- Sends a rednet message to the server to invoke the specified RPC method.
 function Client:serverCall(func, args)
     rednet.send(self.serverID, {func, args}, Common.PROTOCOL)
 end
 
+-- Fetches the current list of stored items from the server.
 function Client:fetchItems(refresh)
     self:serverCall("listItems",{refresh})
 end
 
+-- Deposits items contained within the specified range of inventory slots.
 function Client:depositSlots(startSlot, endSlot)
     if not endSlot then
         endSlot = startSlot
@@ -53,20 +56,24 @@ function Client:depositSlots(startSlot, endSlot)
     end
 end
 
+-- Deposits all items stored in the turtle.
 function Client:depositAll()
     self:depositSlots(1,16)
 end
 
+-- Requests that items be retrieved from the network.
 function Client:requestItem(item, count)
     self:serverCall("requestItem",{self.localName,item.name,count})
 end
 
+-- Moves the selected slot forward or backwards by n slots.
 function Client:moveSelection(n)
     local slot = turtle.getSelectedSlot()
     slot = math.min(math.max(slot+n,1),16)
     turtle.select(slot)
 end
 
+-- Runs the client main loop, performing appropriate setup and cleanup.
 function Client:mainLoop()
     --local config = Common.loadJSON(config_path)
     rednet.open(Common.getModemSide())
@@ -76,6 +83,7 @@ function Client:mainLoop()
     rednet.close(Common.getModemSide())
 end
 
+-- Called when a rednet message is received
 function Client:onMessage(evt, fromID, msg, protocol)
     if fromID == self.serverID then
         if msg[1] == "items" then
