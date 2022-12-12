@@ -14,6 +14,7 @@ local ClientUI = Root:subclass()
 function ClientUI:init(client)
     ClientUI.superClass.init(self)
     
+    self.moveKeys = {w=-4,s=4,a=-1,d=1}
     self.client = client
     
     self.sidebarWidth = math.floor(self.size[1] / 3)
@@ -42,6 +43,10 @@ function ClientUI:init(client)
     self.vbox:addChild(self.lbl,false,true,Constants.LinearAlign.START)
     self.vbox:addChild(self.lbl2,false,true,Constants.LinearAlign.START)
     
+    self.blockKeys = {}
+    self.blockKeys[self.list] = true
+    self.blockKeys[self.sb] = true
+    
     if turtle then
         self.spinBox = LinearContainer(self,1,1,0)
         self.btnBox = LinearContainer(self,1,1,0)
@@ -66,6 +71,8 @@ function ClientUI:init(client)
         self.vbox:addChild(self.spinBox,false,true,Constants.LinearAlign.START)
         self.vbox:addChild(self.btnReq,false,true,Constants.LinearAlign.START)
         self.vbox:addChild(self.btnBox,false,true,Constants.LinearAlign.START)
+        
+        self.blockKeys[self.field] = true
     end
     
     self:setModifier(false)
@@ -100,11 +107,7 @@ function ClientUI:init(client)
         end
     
         function self.btnStore.onPressed(btn)
-            if self.modPressed then
-                self.client:depositAll()
-            else
-                self.client:depositSlots(turtle.getSelectedSlot())
-            end
+            self:storeItem()
         end
         
         function self.btnPrevSlot.onPressed(btn)
@@ -118,17 +121,11 @@ function ClientUI:init(client)
         end
         
         function self.btnPlus.onPressed(btn)
-            local n = tonumber(self.field.text) or 0
-            local mod = (self.modPressed and 64) or 1
-            self.field.text = tostring(math.max(n+mod,0))
-            self.field.dirty = true
+            self:adjustItemCount(1)
         end
         
         function self.btnMinus.onPressed(btn)
-            local n = tonumber(self.field.text) or 0
-            local mod = (self.modPressed and 64) or 1
-            self.field.text = tostring(math.max(n-mod,0))
-            self.field.dirty = true
+            self:adjustItemCount(-1)
         end
     end
     self:onLayout()
@@ -161,9 +158,42 @@ function ClientUI:setModifier(mod)
 end
 
 function ClientUI:onKeyDown(key,held)
-    if (key == keys.leftShift or key == keys.leftCtrl) and not held then
-        self:setModifier(true)
+    if not held then
+        if (key == keys.leftShift or key == keys.leftCtrl) then
+            self:setModifier(true)
+        end
+        local block = self.blockKeys[self.focus]
+        if not block then
+            if key == keys.up or key == keys.down
+                or key == keys.left or key == keys.right then
+                self.list:onKeyDown(key, held)
+            end
+        end
+        if not block or self.focus == self.list then
+            if key == keys.equals then
+                self:adjustItemCount(1)
+            elseif key == keys.minus then
+                self:adjustItemCount(-1)
+            end
+        end
     end
+    return true
+end
+
+function ClientUI:onCharTyped(chr)
+    if self.focus == self.list or not self.blockKeys[self.focus] then
+        local l = chr:lower()
+        if l == "q" then
+            self:requestItem()
+        elseif chr == "e" then
+            self:storeCurrentItem()
+        elseif chr == "E" then
+            self.client:depositAll()
+        elseif self.moveKeys[l] then
+            self.client:moveSelection(self.moveKeys[l])
+        end
+    end
+    return true
 end
 
 function ClientUI:onKeyUp(key)
@@ -228,6 +258,25 @@ function ClientUI:requestItem()
         local item = self.items[self.list.selected]
         local count = tonumber(self.field.text) or 0
         self.client:requestItem(item, count)
+    end
+end
+
+function ClientUI:storeCurrentItem()
+    self.client:depositSlots(turtle.getSelectedSlot())
+end
+
+function ClientUI:adjustItemCount(amount)
+    local n = tonumber(self.field.text) or 0
+    local mod = (self.modPressed and 64) or 1
+    self.field.text = tostring(math.max(n+amount*mod,0))
+    self.field.dirty = true
+end
+
+function ClientUI:storeItem()
+    if self.modPressed then
+        self.client:depositAll()
+    else
+        self:storeCurrentItem()
     end
 end
 

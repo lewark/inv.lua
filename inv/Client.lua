@@ -27,6 +27,7 @@ function Client:fetchItems(refresh)
 end
 
 -- Deposits items contained within the specified range of inventory slots.
+-- Omit endSlot to only deposit items from a single slot.
 function Client:depositSlots(startSlot, endSlot)
     if not endSlot then
         endSlot = startSlot
