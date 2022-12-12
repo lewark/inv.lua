@@ -8,9 +8,14 @@ local CraftTask = Task:subclass()
 -- dest and destSlot are optional.
 function CraftTask:init(server, parent, recipe, dest, destSlot)
     CraftTask.superClass.init(self, server, parent)
+    -- Machine: What is currently crafting this Task's recipe.
+    -- nil if we're waiting to find a machine.
     self.machine = nil
+    -- Recipe: What should be crafted.
     self.recipe = recipe
+    -- Device: Optional. Where crafted items should be sent.
     self.dest = dest
+    -- int: Optional. Slot within self.dest where items should be sent.
     self.destSlot = destSlot
 end
 

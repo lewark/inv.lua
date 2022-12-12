@@ -5,6 +5,7 @@ local WaitTask = Task:subclass()
 
 function WaitTask:init(server, parent, item)
     WaitTask.superClass.init(self, server, parent)
+    -- The Item this task is waiting for.
     self.item = item
 end
 
