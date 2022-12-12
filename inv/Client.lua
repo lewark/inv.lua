@@ -1,6 +1,7 @@
 local Common = require 'inv.Common'
 local ClientUI = require 'inv.ClientUI'
 local Object = require 'object.Object'
+local Item = require 'inv.Item'
 
 local Client = Object:subclass()
 
@@ -70,7 +71,7 @@ function Client:onMessage(evt, fromID, msg, protocol)
     if fromID == self.serverID then
         if msg[1] == "items" then
             for k, v in pairs(msg[2]) do
-                self.items[k] = v
+                self.items[k] = Item(v)
             end
             self.ui:updateList()
         end

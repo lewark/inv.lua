@@ -72,7 +72,7 @@ function ClientUI:init(client)
     
     function self.list.onSelectionChanged(list)
         if self.list.selected >= 1 and self.list.selected <= #self.items then
-            self.lbl.text = self.items[self.list.selected].displayName
+            self.lbl.text = self.items[self.list.selected]:getName()
             self.lbl2.text = "Count: "..self.items[self.list.selected].count
             if turtle then
                 self.btnReq.enabled = true
@@ -177,10 +177,10 @@ function ClientUI:updateList()
     for k,v in pairs(self.client.items) do
         table.insert(self.items,v)
     end
-    table.sort(self.items, function(a, b) return a.displayName:lower() < b.displayName:lower() end)
+    table.sort(self.items, function(a, b) return a:getName():lower() < b:getName():lower() end)
     for k,v in pairs(self.items) do
         local count = self:formatCount(v.count)
-        local line = self:padToWidth(v.displayName,self.list.size[1]-#count)
+        local line = self:padToWidth(v:getName(),self.list.size[1]-#count)
         table.insert(self.list.items,line .. count)
     end
     self.list.dirty = true

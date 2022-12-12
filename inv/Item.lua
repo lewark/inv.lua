@@ -106,7 +106,6 @@ function Item:setDetails(details)
 end
 
 -- Returns a display name for the Item, falling back to Item.name if not present.
--- Currently unused.
 function Item:getName()
     return self.displayName or self.name
 end
@@ -117,13 +116,10 @@ function Item:serialize()
     local t = {}
     t.name = self.name
     t.count = self.count
-    if self.detailed then
-        t.displayName = self.displayName
-        t.maxCount = self.maxCount
-        t.tags = self.tags
-    else
-        t.displayName = self.name
-    end
+    t.detailed = self.detailed
+    t.displayName = self.displayName
+    t.maxCount = self.maxCount
+    t.tags = self.tags
     return t
 end
 
