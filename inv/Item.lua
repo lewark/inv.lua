@@ -8,16 +8,22 @@ local Object = require 'object.Object'
 local Item = Object:subclass()
 
 function Item:init(spec)
-    -- The name (item ID) of the item, e.g. "minecraft:cobblestone". Optional.
+    -- string: The name (item ID) of the item, e.g. "minecraft:cobblestone".
+    -- Optional.
     self.name = spec.name
 
+    -- bool: Whether this Item contains complete information as reported by
+    -- inventory.getItemDetail()
     self.detailed = spec.detailed or false
-    -- The translated display name of the item, e.g. "Cobblestone". Optional.
+    -- string: The translated display name of the item, e.g. "Cobblestone".
+    -- Optional.
     self.displayName = spec.displayName
-    -- Maximum allowed count of the item within a stack (usually 64). Optional.
+    -- int: Maximum allowed count of the item within a stack (usually 64).
+    -- Optional.
     self.maxCount = spec.maxCount
 
-    -- Ore Dictionary tags attached to this item. Always present, but may be empty.
+    -- table: Ore Dictionary tags attached to this item.
+    -- Always present, but may be empty.
     self.tags = {}
     if spec.tags then
         self.tags = spec.tags
@@ -25,7 +31,7 @@ function Item:init(spec)
         self.tags[spec.tag] = true
     end
 
-    -- The number of items in this item stack (default 1).
+    -- int: The number of items in this item stack (default 1).
     self.count = 1
     if spec.count ~= nil then
         self.count = spec.count
