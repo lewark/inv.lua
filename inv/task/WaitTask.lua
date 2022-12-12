@@ -1,5 +1,6 @@
 local Task = require 'inv.task.Task'
 
+-- Waits for a missing item that has no known recipe.
 local WaitTask = Task:subclass()
 
 function WaitTask:init(server, parent, item)

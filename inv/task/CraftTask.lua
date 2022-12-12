@@ -2,6 +2,7 @@ local Task = require 'inv.task.Task'
 local WaitTask = require 'inv.task.WaitTask'
 local Item = require 'inv.Item'
 
+-- Represents a crafting operation in progress.
 local CraftTask = Task:subclass()
 
 -- dest and destSlot are optional.
@@ -15,8 +16,10 @@ end
 
 function CraftTask:run()
     if not self.machine then
+        -- Check if any required input items are missing.
         local rem = self.server.invManager:tryMatchAll(self.recipe.input)
         if #rem > 0 then
+            -- Queue tasks to obtain any missing input items.
             print("item dependencies required")
             for i, item in ipairs(rem) do
                 local recipe = self.server.craftManager:findRecipe(item)
