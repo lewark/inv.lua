@@ -68,7 +68,7 @@ Alternatively, a specific inventory can be configured with its own unique settin
 }
 ```
 
-Inventories can also be designated as crafting machines instead of storage. The default `server.json` contains this entry to treat furnaces as a machine:
+Inventories can also be designated as crafting machines instead of storage. The default configuration under `devices/minecraft.json` contains this rule to treat furnaces as a machine:
 
 ```json
 {
