@@ -10,9 +10,9 @@ local TaskManager = require 'inv.TaskManager'
 local Server = Object:subclass()
 
 function Server:init()
-    local deviceConfig = Config.loadDirectory("devices")
-    local recipeConfig = Config.loadDirectory("recipes")
-    textutils.pagedPrint(textutils.serialize(deviceConfig))
+    local configDir = "config/"
+    local deviceConfig = Config.loadDirectory(configDir .. "devices")
+    local recipeConfig = Config.loadDirectory(configDir .. "recipes")
 
     self.clients = {}
 
