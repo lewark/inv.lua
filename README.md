@@ -46,7 +46,7 @@ If the client or server crash when run, or you are unable to view the list of it
 
 ### Devices
 
-Custom settings for connected devices such as chests, furnaces, or barrels can be specified within JSON files inside the `devices` directory. Each file can contain a single rule or a list of rules that affect device behavior. For example, a type of inventory can be assigned a higher priority so that items are preferentially stored within inventories of that type:
+Custom settings for connected devices such as chests, furnaces, or barrels can be specified within JSON files inside the `devices` directory. Each file can contain a single rule or a list of rules that affect device behavior. For example, this rule assigns a certain type of inventory a higher priority so that items are preferentially stored within inventories of that type:
 
 ```json
 {
