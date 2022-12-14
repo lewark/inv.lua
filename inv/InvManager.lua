@@ -39,13 +39,13 @@ function InvManager:removeInventory(device)
     -- removal does not affect sort
 end
 
--- Static comparison method that returns true if inventory a should be sorted
--- before inventory b.
+-- Static comparison method.
+-- Returns true if inventory a should be sorted before inventory b.
 function InvManager.deviceSort(a, b)
     if a.priority ~= b.priority then
         return a.priority > b.priority
     end
-    return (a.name < b.name)
+    return a.name < b.name
 end
 
 -- Sorts the list of connected inventories if necessary.
