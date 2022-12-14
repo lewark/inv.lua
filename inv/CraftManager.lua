@@ -1,5 +1,4 @@
 local Object = require 'object.Object'
-local Common = require 'inv.Common'
 local CraftTask = require 'inv.task.CraftTask'
 local Recipe = require 'inv.Recipe'
 
@@ -33,11 +32,10 @@ function CraftManager:removeMachine(device)
     self.machines[device.type][device.name] = nil
 end
 
--- Loads all recipes contained within the given JSON file.
--- Files should contain an array of tables, with each table
+-- Loads recipes from the given data.
+-- Data should consist of an array of tables, with each table
 -- in the format required by the Recipe class.
-function CraftManager:loadRecipes(filename)
-    data = Common.loadJSON(filename)
+function CraftManager:loadRecipes(data)
     for i, spec in ipairs(data) do
         local recipe = Recipe(spec)
         for slot, item in pairs(recipe.output) do

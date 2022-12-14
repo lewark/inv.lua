@@ -1,5 +1,6 @@
 local Object = require 'object.Object'
 local Common = require 'inv.Common'
+local Config = require 'inv.Config'
 local CraftManager = require 'inv.CraftManager'
 local DeviceManager = require 'inv.DeviceManager'
 local InvManager = require 'inv.InvManager'
@@ -9,18 +10,20 @@ local TaskManager = require 'inv.TaskManager'
 local Server = Object:subclass()
 
 function Server:init()
-    local config = Common.loadJSON("server.json")
+    local deviceConfig = Config.loadDirectory("devices")
+    local recipeConfig = Config.loadDirectory("recipes")
+    textutils.pagedPrint(textutils.serialize(deviceConfig))
 
     self.clients = {}
 
     self.invManager = InvManager(self)
-    self.deviceManager = DeviceManager(self, config.overrides)
+    self.deviceManager = DeviceManager(self, deviceConfig)
     self.craftManager = CraftManager(self)
     self.taskManager = TaskManager(self)
     self.rpcMethods = RPCMethods
     self.taskTimer = nil
 
-    self.craftManager:loadRecipes("recipes/minecraft.json")
+    self.craftManager:loadRecipes(recipeConfig)
     self.deviceManager:scanDevices()
 end
 

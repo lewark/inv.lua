@@ -51,14 +51,6 @@ function Common.deepCopy(tab)
     return o
 end
 
-function Common.loadJSON(path)
-    local file = io.open(shell.dir().."/"..path,"r")
-    local data = file:read("*all")
-    local config = textutils.unserialiseJSON(data)
-    file:close()
-    return config
-end
-
 function Common.removeItem(t, item)
     for i=1,#t do
         if t[i] == item then
