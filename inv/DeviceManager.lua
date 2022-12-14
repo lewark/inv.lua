@@ -100,8 +100,9 @@ end
 -- then adds it to the device table.
 function DeviceManager:addDevice(name)
     if self.devices[name] then
-        print("double add device " .. name)
-        self.devices[name]:destroy()
+        print("skipped double add device " .. name)
+        --self.devices[name]:destroy()
+        return
     end
     self.devices[name] = self:createDevice(name)
 end

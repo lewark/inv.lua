@@ -57,9 +57,13 @@ function Server:mainLoop()
         if evt[1] == "rednet_message" then
             self:onMessage(evt[2], evt[3], evt[4])
         elseif evt[1] == "peripheral" then
-            self.deviceManager:addDevice(evt[2])
+            if peripheral.isPresent(evt[2]) then
+                self.deviceManager:addDevice(evt[2])
+            end
         elseif evt[1] == "peripheral_detach" then
-            self.deviceManager:removeDevice(evt[2])
+            if not peripheral.isPresent(evt[2]) then
+                self.deviceManager:removeDevice(evt[2])
+            end
         elseif evt[1] == "terminate" then
             break
         elseif evt[1] == "timer" and evt[2] ~= self.taskTimer then
