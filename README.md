@@ -38,7 +38,7 @@ You can then use the client turtle's GUI to request items from the storage netwo
 
 ## Troubleshooting
 
-Make sure to use `cd` to enter the `inv` folder before running the client or server.
+Make sure to use `cd` to enter the repository folder before running the client or server so that the configuration files can be read.
 
 If the client or server crash when run, or you are unable to view the list of items in the network, then one of the turtles likely has not been connected to the server properly (check the cables). If the items show up in the list but cannot be pulled into to the client inventory then you may have forgotten to right-click the modem to connect the turtle fully to the network.
 
