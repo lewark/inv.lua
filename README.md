@@ -6,10 +6,11 @@ This software provides a lightweight, configurable inventory management and auto
 
 ## Installation
 
-The client and server software can be downloaded from GitHub and installed onto turtles in-game using [gitget](http://www.computercraft.info/forums2/index.php?/topic/17387-gitget-version-2-release/).
+The client and server software can be downloaded from GitHub and installed onto turtles in-game using [SquidDev's Git downloader](https://forums.computercraft.cc/index.php?topic=120.0):
+
 ```
-pastebin get W5ZkVYSi gitget
-gitget knector01 inv.lua master inv
+wget https://gist.githubusercontent.com/SquidDev/e0f82765bfdefd48b0b15a5c06c0603b/raw/clone.min.lua
+./clone.min.lua https://github.com/lewark/inv.lua inv
 cd inv
 ```
 
